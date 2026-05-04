@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { create } from 'zustand';
-import Map, { Source, Layer } from 'react-map-gl';
+// อัปเดต: ใช้ import แบบเฉพาะสำหรับ maplibre เพื่อไม่ให้ติดปัญหา Mapbox Token
+import Map from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { CloudRain, Wind, Thermometer, Gauge, Waves, CloudLightning, Sun } from 'lucide-react';
 
