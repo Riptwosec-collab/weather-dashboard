@@ -81,7 +81,16 @@ export interface GeocodingResult {
 export type TempUnit   = 'C' | 'F';
 export type Theme      = 'dark' | 'light';
 export type MobilePanel = 'layers' | 'analysis' | 'timeline';
-export type LayerId    = 'radar' | 'wind' | 'temp' | 'pressure' | 'waves' | 'clouds' | 'storms';
+export type LayerId    =
+  | 'radar'
+  | 'satellite'
+  | 'wind'
+  | 'temp'
+  | 'pressure'
+  | 'precip'
+  | 'waves'
+  | 'clouds'
+  | 'storms';
 
 export interface SavedLocation {
   id: string;
@@ -109,6 +118,7 @@ export interface CompareLocation {
 export interface WeatherStore {
   activeLayers: LayerId[];
   rainviewerTs: number | null;
+  satelliteTs: number | null;
 
   selectedLocation: [number, number];
   locationName: string;
