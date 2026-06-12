@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Theme tokens ── */
+:root {
+  --panel-bg:      rgba(10, 10, 10, 0.65);
+  --panel-border:  rgba(255, 255, 255, 0.10);
+  --input-bg:      rgba(0, 0, 0, 0.50);
+  --map-style:     'dark-matter';
+}
+
+html.light {
+  --panel-bg:      rgba(255, 255, 255, 0.85);
+  --panel-border:  rgba(0, 0, 0, 0.10);
+  --input-bg:      rgba(255, 255, 255, 0.70);
+}
+
+/* ── Light theme class overrides ── */
+html.light body { background-color: #f0f4f8; color: #1a202c; }
+
+html.light .text-neutral-200  { color: #2d3748; }
+html.light .text-neutral-300  { color: #4a5568; }
+html.light .text-neutral-400  { color: #718096; }
+html.light .text-neutral-500  { color: #a0aec0; }
+html.light .text-neutral-600  { color: #cbd5e0; }
+html.light .text-white        { color: #1a202c; }
+html.light .bg-neutral-900\/65  { background-color: rgba(255,255,255,0.88); }
+html.light .bg-neutral-950\/92  { background-color: rgba(248,250,252,0.95); }
+html.light .bg-neutral-950    { background-color: #f8fafc; }
+html.light .bg-black\/50      { background-color: rgba(255,255,255,0.6); }
+html.light .bg-black\/40      { background-color: rgba(255,255,255,0.5); }
+html.light .border-white\/10  { border-color: rgba(0,0,0,0.10); }
+html.light .border-white\/5   { border-color: rgba(0,0,0,0.06); }
+html.light .bg-neutral-800    { background-color: #e2e8f0; }
+html.light .bg-neutral-800\/80 { background-color: rgba(226,232,240,0.9); }
+html.light .bg-neutral-900\/30 { background-color: rgba(237,242,247,0.8); }
+
+/* ── Scrollbar ── */
+@layer utilities {
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #404040 transparent;
+  }
+  html.light .custom-scrollbar { scrollbar-color: #cbd5e0 transparent; }
+
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+  .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+  .custom-scrollbar::-webkit-scrollbar-thumb { background: #404040; border-radius: 2px; }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555; }
+  html.light .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e0; }
+
+  .safe-area-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+}
+
+/* ── MapLibre ── */
+.maplibregl-ctrl-logo,
+.maplibregl-ctrl-attrib { display: none !important; }
+
+/* ── Range inputs ── */
+input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; }
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px; background: #262626; border-radius: 2px;
+}
+html.light input[type="range"]::-webkit-slider-runnable-track { background: #e2e8f0; }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px;
+  border-radius: 50%; background: #3b82f6; margin-top: -4px; cursor: pointer;
+}
+input[type="range"]::-moz-range-track { height: 4px; background: #262626; border-radius: 2px; }
+input[type="range"]::-moz-range-thumb {
+  width: 12px; height: 12px; border: none; border-radius: 50%;
+  background: #3b82f6; cursor: pointer;
+}
+
+/* ── Keyboard hint kbds ── */
+kbd {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  padding: 0 4px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 3px;
+  background: rgba(255,255,255,0.06);
+}
+html.light kbd { border-color: rgba(0,0,0,0.15); background: rgba(0,0,0,0.06); }

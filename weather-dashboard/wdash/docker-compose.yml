@@ -1,0 +1,42 @@
+services:
+
+  # ── Local development (HMR, source maps) ──────────────────
+  dev:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules       # prevent host node_modules from overriding
+    environment:
+      - VITE_OWM_API_KEY=${VITE_OWM_API_KEY:-}
+      - VITE_MAP_STYLE=${VITE_MAP_STYLE:-}
+    command: npm run dev -- --host 0.0.0.0
+
+  # ── Production preview (Nginx, built bundle) ──────────────
+  prod:
+    build:
+      context: .
+      target: production
+    ports:
+      - "8080:80"
+    environment:
+      - VITE_OWM_API_KEY=${VITE_OWM_API_KEY:-}
+
+  # ── E2E tests against dev server ──────────────────────────
+  e2e:
+    build:
+      context: .
+      target: development
+    ports:
+      - "5174:5173"
+    environment:
+      - VITE_OWM_API_KEY=${VITE_OWM_API_KEY:-}
+    command: >
+      sh -c "npm run dev -- --host 0.0.0.0 &
+             npx playwright install --with-deps chromium &&
+             npx playwright test --project=chromium"
+    depends_on:
+      - dev

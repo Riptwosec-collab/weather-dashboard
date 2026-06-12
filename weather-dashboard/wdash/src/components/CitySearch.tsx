@@ -1,0 +1,141 @@
+import React from 'react';
+import { Search, X, MapPin, Bookmark, BookmarkCheck, LocateFixed } from 'lucide-react';
+import { useGeocoding } from '../hooks/useGeocoding';
+import { useWeatherStore } from '../store/weatherStore';
+import type { SavedLocation } from '../types';
+
+export default function CitySearch() {
+  const { setSelectedLocation, savedLocations, saveLocation, removeLocation, selectedLocation, locationName } =
+    useWeatherStore();
+  const { query, setQuery, results, isLoading, clear } = useGeocoding();
+
+  const [lat, lng] = selectedLocation;
+
+  const isSaved = savedLocations.some(
+    (l) => Math.abs(l.lat - lat) < 0.01 && Math.abs(l.lng - lng) < 0.01
+  );
+
+  const handleSave = () => {
+    if (isSaved) {
+      const found = savedLocations.find(
+        (l) => Math.abs(l.lat - lat) < 0.01 && Math.abs(l.lng - lng) < 0.01
+      );
+      if (found) removeLocation(found.id);
+    } else {
+      const loc: SavedLocation = {
+        id: `${lat.toFixed(4)}_${lng.toFixed(4)}`,
+        name: locationName,
+        lat,
+        lng,
+        addedAt: Date.now(),
+      };
+      saveLocation(loc);
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      {/* Search input row */}
+      <div className="flex gap-1">
+        <div className="relative flex-1">
+          <div className="flex items-center gap-1.5 bg-black/50 border border-white/10 rounded px-2 py-1.5">
+            <Search size={11} className="text-neutral-500 shrink-0" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search city…"
+              className="flex-1 bg-transparent text-[11px] text-neutral-200 placeholder-neutral-600 outline-none min-w-0"
+            />
+            {query && (
+              <button onClick={clear} className="shrink-0">
+                <X size={10} className="text-neutral-500 hover:text-white" />
+              </button>
+            )}
+            {isLoading && (
+              <div className="w-2 h-2 border border-blue-400 border-t-transparent rounded-full animate-spin shrink-0" />
+            )}
+          </div>
+
+          {/* Dropdown results */}
+          {results.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-neutral-900/98 border border-white/10 rounded shadow-2xl z-50 overflow-hidden">
+              {results.map((r) => (
+                <button
+                  key={r.id}
+                  className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors border-b border-white/5 last:border-0"
+                  onClick={() => {
+                    setSelectedLocation(
+                      r.latitude,
+                      r.longitude,
+                      `${r.name}${r.country ? ', ' + r.country : ''}`
+                    );
+                    clear();
+                  }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <MapPin size={9} className="text-blue-400 shrink-0" />
+                    <span className="text-[11px] text-white font-medium truncate">{r.name}</span>
+                  </div>
+                  <div className="text-[9px] text-neutral-500 pl-4">
+                    {[r.admin1, r.country].filter(Boolean).join(', ')} ·{' '}
+                    {r.latitude.toFixed(2)}, {r.longitude.toFixed(2)}
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Bookmark current location */}
+        <button
+          onClick={handleSave}
+          title={isSaved ? 'Remove bookmark' : 'Bookmark this location'}
+          className={`shrink-0 w-8 flex items-center justify-center rounded border transition-colors ${
+            isSaved
+              ? 'bg-blue-600/20 border-blue-500/40 text-blue-400'
+              : 'bg-black/50 border-white/10 text-neutral-500 hover:text-white hover:border-white/20'
+          }`}
+        >
+          {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
+        </button>
+      </div>
+
+      {/* Saved location pills */}
+      {savedLocations.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {savedLocations.map((loc) => {
+            const isActive =
+              Math.abs(loc.lat - lat) < 0.01 && Math.abs(loc.lng - lng) < 0.01;
+            return (
+              <button
+                key={loc.id}
+                onClick={() => setSelectedLocation(loc.lat, loc.lng, loc.name)}
+                className={`group flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] border transition-colors ${
+                  isActive
+                    ? 'bg-blue-600/30 border-blue-500/50 text-blue-300'
+                    : 'bg-black/40 border-white/10 text-neutral-400 hover:text-white hover:border-white/20'
+                }`}
+              >
+                <LocateFixed size={8} />
+                <span className="truncate max-w-[80px]">{loc.name}</span>
+                {/* Remove on hover */}
+                <span
+                  role="button"
+                  tabIndex={0}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeLocation(loc.id);
+                  }}
+                  className="hidden group-hover:inline text-neutral-500 hover:text-red-400 ml-0.5"
+                >
+                  ×
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
