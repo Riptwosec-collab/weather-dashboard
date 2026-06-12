@@ -7,9 +7,17 @@ import type { LayerId } from '../types';
 const OWM_LAYERS: LayerId[] = ['wind', 'temp', 'pressure', 'clouds', 'precip'];
 const SOON_LAYERS: LayerId[] = ['waves'];
 const RAINVIEWER_LAYERS: LayerId[] = ['radar', 'satellite', 'storms'];
+const RADAR_LAYERS: LayerId[] = ['radar', 'storms'];
 
 export default function LayerControls() {
-  const { activeLayers, toggleLayer, theme, toggleTheme } = useWeatherStore();
+  const {
+    activeLayers,
+    toggleLayer,
+    theme,
+    toggleTheme,
+    rainviewerTs,
+    satelliteTs,
+  } = useWeatherStore();
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
@@ -20,7 +28,10 @@ export default function LayerControls() {
           const needsApiKey = OWM_LAYERS.includes(layer.id) && !hasOwmApiKey;
           const isSoon = SOON_LAYERS.includes(layer.id);
           const isRainviewer = RAINVIEWER_LAYERS.includes(layer.id);
-          const isDisabled = needsApiKey || isSoon;
+          const noRainviewerData =
+            (RADAR_LAYERS.includes(layer.id) && !rainviewerTs) ||
+            (layer.id === 'satellite' && !satelliteTs);
+          const isDisabled = needsApiKey || isSoon || noRainviewerData;
 
           return (
             <label
@@ -30,7 +41,9 @@ export default function LayerControls() {
                   ? 'Requires VITE_OWM_API_KEY in Vercel Environment Variables'
                   : isSoon
                     ? 'This map layer is not implemented yet'
-                    : layer.name
+                    : noRainviewerData
+                      ? 'RainViewer has no frame data for this layer right now'
+                      : layer.name
               }
               className={`flex items-center gap-2 p-2 transition-colors border-l-2 rounded-r ${
                 isDisabled
@@ -56,6 +69,12 @@ export default function LayerControls() {
                 <span className="text-[8px] font-mono text-yellow-300 bg-yellow-500/10
                                  border border-yellow-500/20 rounded px-1 py-0.5 shrink-0">
                   API KEY
+                </span>
+              )}
+              {noRainviewerData && !needsApiKey && !isSoon && (
+                <span className="text-[8px] font-mono text-orange-300 bg-orange-500/10
+                                 border border-orange-500/20 rounded px-1 py-0.5 shrink-0">
+                  NO DATA
                 </span>
               )}
               {isRainviewer && !isDisabled && (
