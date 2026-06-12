@@ -1,7 +1,11 @@
 import React from 'react';
 import { Sun, Moon } from 'lucide-react';
 import { useWeatherStore } from '../store/weatherStore';
-import { LAYERS_LIST, LAYER_ICONS } from '../utils/helpers';
+import { LAYERS_LIST, LAYER_ICONS, hasOwmApiKey } from '../utils/helpers';
+import type { LayerId } from '../types';
+
+const OWM_LAYERS: LayerId[] = ['wind', 'temp', 'pressure', 'clouds'];
+const SOON_LAYERS: LayerId[] = ['waves', 'storms'];
 
 export default function LayerControls() {
   const { activeLayers, toggleLayer, theme, toggleTheme } = useWeatherStore();
@@ -12,25 +16,53 @@ export default function LayerControls() {
         {LAYERS_LIST.map((layer) => {
           const Icon = LAYER_ICONS[layer.id];
           const isActive = activeLayers.includes(layer.id);
+          const needsApiKey = OWM_LAYERS.includes(layer.id) && !hasOwmApiKey;
+          const isSoon = SOON_LAYERS.includes(layer.id);
+          const isDisabled = needsApiKey || isSoon;
+
           return (
             <label
               key={layer.id}
-              className={`flex items-center gap-2 p-2 cursor-pointer transition-colors border-l-2 rounded-r ${
-                isActive
-                  ? 'bg-neutral-800/80 border-blue-500 text-white'
-                  : 'border-transparent text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200'
+              title={
+                needsApiKey
+                  ? 'Requires VITE_OWM_API_KEY in Vercel Environment Variables'
+                  : isSoon
+                    ? 'This map layer is not implemented yet'
+                    : layer.name
+              }
+              className={`flex items-center gap-2 p-2 transition-colors border-l-2 rounded-r ${
+                isDisabled
+                  ? 'opacity-45 cursor-not-allowed border-transparent text-neutral-500'
+                  : isActive
+                    ? 'bg-neutral-800/80 border-blue-500 text-white cursor-pointer'
+                    : 'border-transparent text-neutral-400 hover:bg-neutral-800/50 hover:text-neutral-200 cursor-pointer'
               }`}
             >
               <input
                 type="checkbox"
-                checked={isActive}
-                onChange={() => toggleLayer(layer.id)}
+                checked={isActive && !isDisabled}
+                disabled={isDisabled}
+                onChange={() => !isDisabled && toggleLayer(layer.id)}
                 className="appearance-none w-3 h-3 border border-neutral-600 rounded-sm
-                           checked:bg-blue-500 focus:ring-0 cursor-pointer shrink-0"
+                           checked:bg-blue-500 focus:ring-0 cursor-pointer shrink-0
+                           disabled:cursor-not-allowed disabled:opacity-50"
               />
-              <Icon size={14} className={isActive ? layer.color : 'opacity-40'} />
+              <Icon size={14} className={isActive && !isDisabled ? layer.color : 'opacity-40'} />
               <span className="flex-1 text-[11px] truncate">{layer.name}</span>
-              {isActive && (
+
+              {needsApiKey && (
+                <span className="text-[8px] font-mono text-yellow-300 bg-yellow-500/10
+                                 border border-yellow-500/20 rounded px-1 py-0.5 shrink-0">
+                  API KEY
+                </span>
+              )}
+              {isSoon && (
+                <span className="text-[8px] font-mono text-neutral-400 bg-neutral-700/30
+                                 border border-white/10 rounded px-1 py-0.5 shrink-0">
+                  SOON
+                </span>
+              )}
+              {isActive && !isDisabled && (
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0" />
               )}
             </label>
@@ -41,7 +73,7 @@ export default function LayerControls() {
       {/* Footer: tile attribution + theme toggle */}
       <div className="p-2 border-t border-white/5 flex items-center justify-between gap-2">
         <p className="text-[9px] text-neutral-600 leading-relaxed">
-          Radar: RainViewer · Wind/Temp: OWM
+          Radar: RainViewer · Weather cards: Open-Meteo · Map layers: OWM key required
         </p>
         <button
           onClick={toggleTheme}
