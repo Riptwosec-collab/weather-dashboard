@@ -1,0 +1,11 @@
+{
+  "name": "weather-dashboard-deploy-wrapper",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix weather-dashboard/wdash run dev",
+    "build": "npm --prefix weather-dashboard/wdash run build",
+    "preview": "npm --prefix weather-dashboard/wdash run preview"
+  }
+}
