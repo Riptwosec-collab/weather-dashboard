@@ -18,13 +18,13 @@
     "format":         "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "format:check":   "prettier --check \"src/**/*.{ts,tsx,css}\"",
     "typecheck":      "tsc --noEmit",
-    "prepare":        "husky"
+    "prepare":        "husky || true"
   },
   "dependencies": {
     "lucide-react":  "^0.383.0",
     "maplibre-gl":   "^4.5.0",
     "react":         "^18.3.1",
-    "react-dom":     "^18.3.1",
+    "react-dom":     "^18.3.0",
     "react-map-gl":  "^7.1.7",
     "recharts":      "^2.12.7",
     "zustand":       "^4.5.4"
