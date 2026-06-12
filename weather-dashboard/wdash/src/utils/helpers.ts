@@ -5,7 +5,9 @@ export const OWM_API_KEY = import.meta.env.VITE_OWM_API_KEY as string | undefine
 export const hasOwmApiKey = Boolean(OWM_API_KEY && OWM_API_KEY.trim() && OWM_API_KEY !== 'demo');
 
 const OWM_NATIVE_MAX_ZOOM = 5;
-const RAINVIEWER_RADAR_MAX_ZOOM = 10;
+// RainViewer can return black "Zoom Level Not Supported" image tiles at city-level native zooms.
+// Keep the requested native tile zoom low and let MapLibre overzoom/stretch those tiles instead.
+const RAINVIEWER_RADAR_MAX_ZOOM = 5;
 // RainViewer satellite tiles are low-zoom global imagery. Requesting higher native zooms
 // returns provider error tiles that say "Zoom Level Not Supported".
 const RAINVIEWER_SATELLITE_MAX_ZOOM = 5;
