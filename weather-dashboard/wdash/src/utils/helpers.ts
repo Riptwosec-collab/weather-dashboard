@@ -1,11 +1,13 @@
 import { CloudRain, Wind, Thermometer, Gauge, Waves, Sun, CloudLightning } from 'lucide-react';
 import type { LayerDef, LayerId } from '../types';
 
-// ── External tile API status ─────────────────────────────────
 export const OWM_API_KEY = import.meta.env.VITE_OWM_API_KEY as string | undefined;
 export const hasOwmApiKey = Boolean(OWM_API_KEY && OWM_API_KEY.trim() && OWM_API_KEY !== 'demo');
 
-// ── Temperature helpers ────────────────────────────────────
+const OWM_NATIVE_MAX_ZOOM = 5;
+const OWM_ATTRIBUTION = 'OpenWeatherMap';
+const RAINVIEWER_ATTRIBUTION = 'RainViewer';
+
 export const celsiusToF = (c: number): number => +(c * 9 / 5 + 32).toFixed(1);
 
 export const formatTemp = (val: number | null | undefined, unit: 'C' | 'F'): string => {
@@ -13,7 +15,6 @@ export const formatTemp = (val: number | null | undefined, unit: 'C' | 'F'): str
   return unit === 'F' ? `${celsiusToF(val)}°F` : `${val}°C`;
 };
 
-// ── WMO weather codes ──────────────────────────────────────
 export const WMO_CODES: Record<number, string> = {
   0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Foggy', 48: 'Icing fog',
@@ -27,39 +28,42 @@ export const WMO_CODES: Record<number, string> = {
 export const wmoLabel = (code: number | undefined): string =>
   code != null ? WMO_CODES[code] ?? `Code ${code}` : '--';
 
-// ── Wind direction ─────────────────────────────────────────
 const DIRECTIONS = ['N','NE','E','SE','S','SW','W','NW'];
 export const windDir = (deg: number | undefined): string => {
   if (deg == null) return '--';
   return DIRECTIONS[Math.round(deg / 45) % 8];
 };
 
-// ── Layer definitions ──────────────────────────────────────
 export const LAYERS_LIST: LayerDef[] = [
-  { id: 'radar',    name: 'Rain Radar',      color: 'text-blue-400'   },
-  { id: 'wind',     name: 'Wind Gusts',       color: 'text-teal-400'   },
-  { id: 'temp',     name: 'Temperature',      color: 'text-red-400'    },
-  { id: 'pressure', name: 'Pressure Isobars', color: 'text-purple-400' },
-  { id: 'clouds',   name: 'Cloud Cover',      color: 'text-gray-400'   },
-  { id: 'waves',    name: 'Swell & Waves',    color: 'text-cyan-400'   },
-  { id: 'storms',   name: 'Thunderstorms',    color: 'text-yellow-400' },
+  { id: 'radar',     name: 'Rain Radar',       color: 'text-blue-400'   },
+  { id: 'satellite', name: 'Satellite Clouds', color: 'text-sky-300'    },
+  { id: 'wind',      name: 'Wind Gusts',        color: 'text-teal-400'   },
+  { id: 'temp',      name: 'Temperature',       color: 'text-red-400'    },
+  { id: 'pressure',  name: 'Pressure Isobars',  color: 'text-purple-400' },
+  { id: 'precip',    name: 'Precipitation',     color: 'text-blue-300'   },
+  { id: 'clouds',    name: 'Cloud Cover',       color: 'text-gray-400'   },
+  { id: 'storms',    name: 'Storm Radar',       color: 'text-yellow-400' },
+  { id: 'waves',     name: 'Swell & Waves',     color: 'text-cyan-400'   },
 ];
 
 export const LAYER_ICONS: Record<LayerId, React.ComponentType<{ size?: number; className?: string }>> = {
-  radar:    CloudRain,
-  wind:     Wind,
-  temp:     Thermometer,
-  pressure: Gauge,
-  waves:    Waves,
-  clouds:   Sun,
-  storms:   CloudLightning,
+  radar:     CloudRain,
+  satellite: Sun,
+  wind:      Wind,
+  temp:      Thermometer,
+  pressure:  Gauge,
+  precip:    CloudRain,
+  waves:     Waves,
+  clouds:    Sun,
+  storms:    CloudLightning,
 };
 
-// ── MapLibre tile overlay builder ─────────────────────────
 interface TileSource {
   id: string;
   tiles: string[];
   tileSize?: number;
+  minzoom?: number;
+  maxzoom?: number;
   attribution?: string;
 }
 
@@ -72,6 +76,7 @@ interface TileLayer {
 export function buildOverlayLayers(
   activeLayers: LayerId[],
   rainviewerTs: number | null,
+  satelliteTs: number | null,
   owmKey = OWM_API_KEY
 ): { sources: TileSource[]; layers: TileLayer[] } {
   const sources: TileSource[] = [];
@@ -90,65 +95,71 @@ export function buildOverlayLayers(
 
   if (activeLayers.includes('radar') && rainviewerTs) {
     push(
-      'rainviewer-src',
+      'rainviewer-radar-src',
       [`https://tilecache.rainviewer.com/v2/radar/${rainviewerTs}/256/{z}/{x}/{y}/2/1_1.png`],
-      'rainviewer-layer',
-      { 'raster-opacity': 0.7 },
-      { attribution: '© RainViewer' }
+      'rainviewer-radar-layer',
+      { 'raster-opacity': 0.72, 'raster-contrast': 0.08, 'raster-saturation': 0.2 },
+      { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: 10 }
     );
   }
 
-  // OpenWeatherMap raster overlays require VITE_OWM_API_KEY.
-  // Without a key, skip these sources so the UI does not fire failing tile requests.
+  if (activeLayers.includes('storms') && rainviewerTs) {
+    push(
+      'rainviewer-storm-src',
+      [`https://tilecache.rainviewer.com/v2/radar/${rainviewerTs}/256/{z}/{x}/{y}/4/1_1.png`],
+      'rainviewer-storm-layer',
+      { 'raster-opacity': 0.8, 'raster-contrast': 0.18, 'raster-saturation': 0.35 },
+      { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: 10 }
+    );
+  }
+
+  if (activeLayers.includes('satellite') && satelliteTs) {
+    push(
+      'rainviewer-satellite-src',
+      [`https://tilecache.rainviewer.com/v2/satellite/${satelliteTs}/256/{z}/{x}/{y}/0/0_0.png`],
+      'rainviewer-satellite-layer',
+      { 'raster-opacity': 0.55, 'raster-contrast': 0.15, 'raster-saturation': -0.25 },
+      { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: 8 }
+    );
+  }
+
   if (!owmKey || owmKey === 'demo') return { sources, layers };
 
+  const owmSourceOptions: Partial<TileSource> = {
+    attribution: OWM_ATTRIBUTION,
+    minzoom: 0,
+    maxzoom: OWM_NATIVE_MAX_ZOOM,
+  };
+
   if (activeLayers.includes('wind')) {
-    push(
-      'wind-src',
-      [`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${owmKey}`],
-      'wind-layer',
-      { 'raster-opacity': 0.6, 'raster-hue-rotate': 200 }
-    );
+    push('wind-src', [`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'wind-layer', { 'raster-opacity': 0.58, 'raster-hue-rotate': 200, 'raster-saturation': 0.2 }, owmSourceOptions);
   }
 
   if (activeLayers.includes('temp')) {
-    push(
-      'temp-src',
-      [`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${owmKey}`],
-      'temp-layer',
-      { 'raster-opacity': 0.6 }
-    );
+    push('temp-src', [`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'temp-layer', { 'raster-opacity': 0.62, 'raster-contrast': 0.08 }, owmSourceOptions);
+  }
+
+  if (activeLayers.includes('precip')) {
+    push('precip-src', [`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'precip-layer', { 'raster-opacity': 0.68, 'raster-contrast': 0.12, 'raster-saturation': 0.2 }, owmSourceOptions);
   }
 
   if (activeLayers.includes('clouds')) {
-    push(
-      'clouds-src',
-      [`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${owmKey}`],
-      'clouds-layer',
-      { 'raster-opacity': 0.5 }
-    );
+    push('clouds-src', [`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'clouds-layer', { 'raster-opacity': 0.46, 'raster-contrast': 0.06 }, owmSourceOptions);
   }
 
   if (activeLayers.includes('pressure')) {
-    push(
-      'pressure-src',
-      [`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${owmKey}`],
-      'pressure-layer',
-      { 'raster-opacity': 0.5 }
-    );
+    push('pressure-src', [`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'pressure-layer', { 'raster-opacity': 0.5, 'raster-contrast': 0.08 }, owmSourceOptions);
   }
 
   return { sources, layers };
 }
 
-// ── Sunrise/sunset formatter ───────────────────────────────
 export const formatTime = (iso: string | undefined): string => {
   if (!iso) return '--';
   try { return new Date(iso).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
   catch { return '--'; }
 };
 
-// ── Date formatter for 7-day forecast ─────────────────────
 export const formatDay = (iso: string | undefined): string => {
   if (!iso) return '--';
   try {
