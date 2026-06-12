@@ -1,23 +1,74 @@
 import React from 'react';
 import { Layer } from 'react-map-gl/maplibre';
 
+const COUNTRY_FILTER = ['all', ['==', 'admin_level', 2], ['!=', 'maritime', 1]] as any;
 const PROVINCE_FILTER = ['all', ['==', 'admin_level', 4], ['!=', 'maritime', 1]] as any;
 const DISTRICT_FILTER = ['all', ['==', 'admin_level', 6], ['!=', 'maritime', 1]] as any;
+
+const roundedLine = {
+  'line-cap': 'round',
+  'line-join': 'round',
+} as any;
 
 export default function AdminBoundaryLayers() {
   return (
     <>
+      {/* Country border: strongest visual hierarchy */}
+      <Layer
+        id="admin-country-glow"
+        type="line"
+        source="carto"
+        source-layer="boundary"
+        filter={COUNTRY_FILTER}
+        layout={roundedLine}
+        paint={{
+          'line-color': '#e0f2fe',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 3, 4.5, 6, 6, 10, 8],
+          'line-opacity': 0.2,
+          'line-blur': 4,
+        } as any}
+      />
+      <Layer
+        id="admin-country-line"
+        type="line"
+        source="carto"
+        source-layer="boundary"
+        filter={COUNTRY_FILTER}
+        layout={roundedLine}
+        paint={{
+          'line-color': '#f8fafc',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 3, 1.15, 6, 1.8, 10, 2.8],
+          'line-opacity': ['interpolate', ['linear'], ['zoom'], 3, 0.92, 8, 0.78, 11, 0.66],
+        } as any}
+      />
+      <Layer
+        id="admin-country-accent"
+        type="line"
+        source="carto"
+        source-layer="boundary"
+        filter={COUNTRY_FILTER}
+        layout={roundedLine}
+        paint={{
+          'line-color': '#38bdf8',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 3, 0.35, 6, 0.6, 10, 0.9],
+          'line-opacity': 0.72,
+          'line-dasharray': [5, 1.5],
+        } as any}
+      />
+
+      {/* Province border: readable but softer than country border */}
       <Layer
         id="admin-province-glow"
         type="line"
         source="carto"
         source-layer="boundary"
         filter={PROVINCE_FILTER}
+        layout={roundedLine}
         paint={{
           'line-color': '#22d3ee',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 4, 2.2, 7, 3.2, 10, 5],
-          'line-opacity': 0.28,
-          'line-blur': 3,
+          'line-width': ['interpolate', ['linear'], ['zoom'], 4, 1.5, 7, 2.2, 10, 3.4],
+          'line-opacity': ['interpolate', ['linear'], ['zoom'], 3, 0.12, 6, 0.18, 10, 0.24],
+          'line-blur': 2.2,
         } as any}
       />
       <Layer
@@ -26,23 +77,27 @@ export default function AdminBoundaryLayers() {
         source="carto"
         source-layer="boundary"
         filter={PROVINCE_FILTER}
+        layout={roundedLine}
         paint={{
-          'line-color': '#38bdf8',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.9, 7, 1.5, 10, 2.6],
-          'line-opacity': 0.85,
+          'line-color': '#67e8f9',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 4, 0.55, 7, 0.95, 10, 1.6],
+          'line-opacity': ['interpolate', ['linear'], ['zoom'], 3, 0.38, 6, 0.55, 10, 0.72],
         } as any}
       />
+
+      {/* District border: only becomes obvious at useful city-level zooms */}
       <Layer
         id="admin-district-glow"
         type="line"
         source="carto"
         source-layer="boundary"
         filter={DISTRICT_FILTER}
+        layout={roundedLine}
         paint={{
-          'line-color': '#facc15',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1.2, 9, 2, 12, 3],
-          'line-opacity': ['interpolate', ['linear'], ['zoom'], 5, 0, 7, 0.16, 10, 0.28],
-          'line-blur': 2,
+          'line-color': '#fef3c7',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 7, 0.8, 9, 1.4, 12, 2.2],
+          'line-opacity': ['interpolate', ['linear'], ['zoom'], 6, 0, 8, 0.08, 10, 0.16, 12, 0.24],
+          'line-blur': 1.5,
         } as any}
       />
       <Layer
@@ -51,11 +106,12 @@ export default function AdminBoundaryLayers() {
         source="carto"
         source-layer="boundary"
         filter={DISTRICT_FILTER}
+        layout={roundedLine}
         paint={{
-          'line-color': '#fde68a',
-          'line-width': ['interpolate', ['linear'], ['zoom'], 6, 0.35, 9, 0.75, 12, 1.25],
-          'line-opacity': ['interpolate', ['linear'], ['zoom'], 5, 0, 7, 0.35, 10, 0.58],
-          'line-dasharray': [1.4, 1.4],
+          'line-color': '#fbbf24',
+          'line-width': ['interpolate', ['linear'], ['zoom'], 7, 0.2, 9, 0.45, 12, 0.9],
+          'line-opacity': ['interpolate', ['linear'], ['zoom'], 6, 0, 8, 0.18, 10, 0.32, 12, 0.52],
+          'line-dasharray': [1.2, 1.8],
         } as any}
       />
     </>
