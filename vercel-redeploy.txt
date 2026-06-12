@@ -1,0 +1,3 @@
+Trigger Vercel deployment with latest install config.
+
+This file was added to force Vercel to deploy the latest main branch commit that includes npm install --legacy-peer-deps in vercel.json.
