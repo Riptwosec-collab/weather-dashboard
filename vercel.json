@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm install --ignore-scripts",
+  "installCommand": "npm install --ignore-scripts --legacy-peer-deps",
   "buildCommand": "npm run build",
   "outputDirectory": "weather-dashboard/wdash/dist",
   "rewrites": [
