@@ -82,6 +82,7 @@ export type TempUnit   = 'C' | 'F';
 export type Theme      = 'dark' | 'light';
 export type MobilePanel = 'layers' | 'analysis' | 'timeline';
 export type LayerId    =
+  | 'admin'
   | 'radar'
   | 'satellite'
   | 'wind'
