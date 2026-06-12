@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, lazy, Suspense } from 'react';
-import { Layers, Eye, Clock, Keyboard } from 'lucide-react';
+import React, { useEffect, useRef, lazy, Suspense, useState } from 'react';
+import { Layers, Eye, Clock, Keyboard, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useWeatherStore } from './store/weatherStore';
 import { useShareableUrl } from './hooks/useShareableUrl';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -29,7 +29,7 @@ function PanelHeader({
   return (
     <div className="px-3 py-2.5 border-b border-white/10 font-bold tracking-wider text-neutral-400
                     uppercase text-[10px] flex items-center gap-1.5 justify-between shrink-0">
-      <span className="flex items-center gap-1.5"><Icon size={11} />{label}</span>
+      <span className="flex items-center gap-1.5 min-w-0"><Icon size={11} />{label && <span className="truncate">{label}</span>}</span>
       {badge}
     </div>
   );
@@ -87,6 +87,7 @@ function ShortcutHint() {
 // ── Main ──────────────────────────────────────────────────────
 export default function App() {
   const { fetchRainviewerTs, mobilePanel, theme } = useWeatherStore();
+  const [layersCollapsed, setLayersCollapsed] = useState(false);
 
   // Shareable URL sync (reads params on mount, writes on change)
   useShareableUrl();
@@ -130,10 +131,23 @@ export default function App() {
       {/* ── DESKTOP ── */}
       <div className="hidden md:flex absolute inset-0 z-10 pointer-events-none p-4 gap-4 flex-col">
         <div className="flex flex-1 gap-4 min-h-0">
-          <aside className="w-56 bg-neutral-900/65 backdrop-blur-md border border-white/10
-                            rounded-xl flex flex-col shadow-2xl pointer-events-auto overflow-hidden">
-            <PanelHeader icon={Layers} label="Data Layers" />
-            <ErrorBoundary><LayerControls /></ErrorBoundary>
+          <aside className={`${layersCollapsed ? 'w-14' : 'w-56'} bg-neutral-900/65 backdrop-blur-md border border-white/10
+                            rounded-xl flex flex-col shadow-2xl pointer-events-auto overflow-hidden transition-all duration-300`}>
+            <PanelHeader
+              icon={Layers}
+              label={layersCollapsed ? '' : 'Data Layers'}
+              badge={
+                <button
+                  onClick={() => setLayersCollapsed((v) => !v)}
+                  title={layersCollapsed ? 'Expand layers' : 'Collapse layers'}
+                  className="w-6 h-6 flex items-center justify-center rounded bg-black/40 border border-white/10
+                             text-neutral-400 hover:text-white hover:border-white/20 transition-colors"
+                >
+                  {layersCollapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
+                </button>
+              }
+            />
+            <ErrorBoundary><LayerControls compact={layersCollapsed} /></ErrorBoundary>
           </aside>
 
           <aside className="w-80 bg-neutral-900/65 backdrop-blur-md border border-white/10
