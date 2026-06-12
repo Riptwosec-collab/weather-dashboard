@@ -1,4 +1,4 @@
-import { CloudRain, Wind, Thermometer, Gauge, Waves, Sun, CloudLightning } from 'lucide-react';
+import { CloudRain, Wind, Thermometer, Gauge, Waves, Sun, CloudLightning, Map as MapIcon } from 'lucide-react';
 import type { LayerDef, LayerId } from '../types';
 
 export const OWM_API_KEY = import.meta.env.VITE_OWM_API_KEY as string | undefined;
@@ -87,6 +87,7 @@ export async function reverseGeocodeName(lat: number, lng: number): Promise<stri
 }
 
 export const LAYERS_LIST: LayerDef[] = [
+  { id: 'admin',     name: 'Admin Boundaries', color: 'text-cyan-300'   },
   { id: 'radar',     name: 'Rain Radar',       color: 'text-blue-400'   },
   { id: 'satellite', name: 'Satellite Clouds', color: 'text-sky-300'    },
   { id: 'wind',      name: 'Wind Gusts',        color: 'text-teal-400'   },
@@ -99,6 +100,7 @@ export const LAYERS_LIST: LayerDef[] = [
 ];
 
 export const LAYER_ICONS: Record<LayerId, React.ComponentType<{ size?: number; className?: string }>> = {
+  admin:     MapIcon,
   radar:     CloudRain,
   satellite: Sun,
   wind:      Wind,
