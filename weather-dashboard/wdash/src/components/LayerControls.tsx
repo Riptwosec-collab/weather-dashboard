@@ -4,8 +4,9 @@ import { useWeatherStore } from '../store/weatherStore';
 import { LAYERS_LIST, LAYER_ICONS, hasOwmApiKey } from '../utils/helpers';
 import type { LayerId } from '../types';
 
-const OWM_LAYERS: LayerId[] = ['wind', 'temp', 'pressure', 'clouds'];
-const SOON_LAYERS: LayerId[] = ['waves', 'storms'];
+const OWM_LAYERS: LayerId[] = ['wind', 'temp', 'pressure', 'clouds', 'precip'];
+const SOON_LAYERS: LayerId[] = ['waves'];
+const RAINVIEWER_LAYERS: LayerId[] = ['radar', 'satellite', 'storms'];
 
 export default function LayerControls() {
   const { activeLayers, toggleLayer, theme, toggleTheme } = useWeatherStore();
@@ -18,6 +19,7 @@ export default function LayerControls() {
           const isActive = activeLayers.includes(layer.id);
           const needsApiKey = OWM_LAYERS.includes(layer.id) && !hasOwmApiKey;
           const isSoon = SOON_LAYERS.includes(layer.id);
+          const isRainviewer = RAINVIEWER_LAYERS.includes(layer.id);
           const isDisabled = needsApiKey || isSoon;
 
           return (
@@ -56,6 +58,12 @@ export default function LayerControls() {
                   API KEY
                 </span>
               )}
+              {isRainviewer && !isDisabled && (
+                <span className="text-[8px] font-mono text-blue-300 bg-blue-500/10
+                                 border border-blue-500/20 rounded px-1 py-0.5 shrink-0">
+                  RADAR
+                </span>
+              )}
               {isSoon && (
                 <span className="text-[8px] font-mono text-neutral-400 bg-neutral-700/30
                                  border border-white/10 rounded px-1 py-0.5 shrink-0">
@@ -73,7 +81,7 @@ export default function LayerControls() {
       {/* Footer: tile attribution + theme toggle */}
       <div className="p-2 border-t border-white/5 flex items-center justify-between gap-2">
         <p className="text-[9px] text-neutral-600 leading-relaxed">
-          Radar: RainViewer · Weather cards: Open-Meteo · Map layers: OWM key required
+          Radar/Satellite: RainViewer · Weather cards: Open-Meteo · OWM overlays need API key
         </p>
         <button
           onClick={toggleTheme}
