@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "workspaces": [
+    "weather-dashboard/wdash"
+  ],
   "scripts": {
-    "dev": "npm --prefix weather-dashboard/wdash run dev",
-    "build": "npm --prefix weather-dashboard/wdash run build",
-    "preview": "npm --prefix weather-dashboard/wdash run preview"
+    "dev": "npm run dev --workspace weather-dashboard",
+    "build": "npm run build --workspace weather-dashboard",
+    "preview": "npm run preview --workspace weather-dashboard"
   }
 }
