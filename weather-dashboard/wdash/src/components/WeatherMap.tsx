@@ -12,8 +12,14 @@ const MAP_STYLE =
   'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
 
 function WeatherMapInner() {
-  const { setSelectedLocation, activeLayers, rainviewerTs, selectedLocation, locationName } =
-    useWeatherStore();
+  const {
+    setSelectedLocation,
+    activeLayers,
+    rainviewerTs,
+    satelliteTs,
+    selectedLocation,
+    locationName,
+  } = useWeatherStore();
 
   const [lat, lng] = selectedLocation;
   const [hud, setHud]           = useState({ show: false, x: 0, y: 0, lat: '0', lng: '0' });
@@ -70,7 +76,7 @@ function WeatherMapInner() {
     } catch { /* clipboard unavailable */ }
   }, [copyShareLink]);
 
-  const { sources, layers } = buildOverlayLayers(activeLayers, rainviewerTs);
+  const { sources, layers } = buildOverlayLayers(activeLayers, rainviewerTs, satelliteTs);
 
   return (
     <div className="w-full h-full relative cursor-crosshair">
@@ -85,9 +91,16 @@ function WeatherMapInner() {
       >
         {/* ── tile overlays ── */}
         {sources.map((src) => (
-          <Source key={src.id} id={src.id} type="raster"
-                  tiles={src.tiles} tileSize={src.tileSize ?? 256}
-                  attribution={src.attribution}>
+          <Source
+            key={src.id}
+            id={src.id}
+            type="raster"
+            tiles={src.tiles}
+            tileSize={src.tileSize ?? 256}
+            minzoom={src.minzoom}
+            maxzoom={src.maxzoom}
+            attribution={src.attribution}
+          >
             {layers.filter((l) => l.source === src.id).map((l) => (
               <Layer key={l.id} id={l.id} type="raster"
                      paint={l.paint as Record<string, unknown>} />
