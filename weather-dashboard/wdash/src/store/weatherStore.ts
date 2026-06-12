@@ -49,6 +49,16 @@ const latestRainViewerPath = (frames: RainViewerFrame[] | undefined, fallbackTyp
   return latest.time ? `/v2/${fallbackType}/${latest.time}` : undefined;
 };
 
+const removeUnavailableRainViewerLayers = (
+  layers: LayerId[],
+  hasRadar: boolean,
+  hasSatellite: boolean,
+): LayerId[] => layers.filter((layer) => {
+  if ((layer === 'radar' || layer === 'storms') && !hasRadar) return false;
+  if (layer === 'satellite' && !hasSatellite) return false;
+  return true;
+});
+
 // ── store ────────────────────────────────────────────────────
 export const useWeatherStore = create<WeatherStore>()(
   persist(
@@ -82,11 +92,28 @@ export const useWeatherStore = create<WeatherStore>()(
 
       // ── sync actions ────────────────────────────────────
       toggleLayer: (id) =>
-        set((s) => ({
-          activeLayers: s.activeLayers.includes(id)
-            ? s.activeLayers.filter((l) => l !== id)
-            : [...s.activeLayers, id],
-        })),
+        set((s) => {
+          const hasRadar = Boolean(s.rainviewerTs);
+          const hasSatellite = Boolean(s.satelliteTs);
+
+          if ((id === 'radar' || id === 'storms') && !hasRadar) {
+            return {
+              activeLayers: removeUnavailableRainViewerLayers(s.activeLayers, hasRadar, hasSatellite),
+            };
+          }
+
+          if (id === 'satellite' && !hasSatellite) {
+            return {
+              activeLayers: removeUnavailableRainViewerLayers(s.activeLayers, hasRadar, hasSatellite),
+            };
+          }
+
+          return {
+            activeLayers: s.activeLayers.includes(id)
+              ? s.activeLayers.filter((l) => l !== id)
+              : [...s.activeLayers, id],
+          };
+        }),
 
       setSelectedLocation: (lat, lng, name) =>
         set({ selectedLocation: [lat, lng], currentTime: 0, ...(name ? { locationName: name } : {}) }),
@@ -138,11 +165,22 @@ export const useWeatherStore = create<WeatherStore>()(
           const json = await res.json();
           const radarPath = latestRainViewerPath(json.radar?.past, 'radar');
           const satPath   = latestRainViewerPath(json.satellite?.infrared, 'satellite');
-          set({
-            ...(radarPath ? { rainviewerTs: radarPath } : {}),
-            ...(satPath ? { satelliteTs: satPath } : {}),
-          });
-        } catch { /* radar unavailable */ }
+          set((s) => ({
+            rainviewerTs: radarPath ?? null,
+            satelliteTs: satPath ?? null,
+            activeLayers: removeUnavailableRainViewerLayers(
+              s.activeLayers,
+              Boolean(radarPath),
+              Boolean(satPath),
+            ),
+          }));
+        } catch {
+          set((s) => ({
+            rainviewerTs: null,
+            satelliteTs: null,
+            activeLayers: removeUnavailableRainViewerLayers(s.activeLayers, false, false),
+          }));
+        }
       },
 
       // ── async: weather ───────────────────────────────────
