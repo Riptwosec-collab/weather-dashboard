@@ -9,7 +9,56 @@ const SOON_LAYERS: LayerId[] = ['waves'];
 const RAINVIEWER_LAYERS: LayerId[] = ['radar', 'satellite', 'storms'];
 const RADAR_LAYERS: LayerId[] = ['radar', 'storms'];
 
-export default function LayerControls() {
+type LayerStatus = {
+  label: 'LIVE' | 'API KEY' | 'NO DATA' | 'SOON';
+  className: string;
+  disabled: boolean;
+  title: string;
+};
+
+function getLayerStatus(layer: LayerId, rainviewerTs: string | null, satelliteTs: string | null): LayerStatus {
+  const needsApiKey = OWM_LAYERS.includes(layer) && !hasOwmApiKey;
+  const isSoon = SOON_LAYERS.includes(layer);
+  const noRainviewerData =
+    (RADAR_LAYERS.includes(layer) && !rainviewerTs) ||
+    (layer === 'satellite' && !satelliteTs);
+
+  if (needsApiKey) {
+    return {
+      label: 'API KEY',
+      disabled: true,
+      title: 'Requires VITE_OWM_API_KEY in Vercel Environment Variables',
+      className: 'text-yellow-300 bg-yellow-500/10 border-yellow-500/20',
+    };
+  }
+
+  if (isSoon) {
+    return {
+      label: 'SOON',
+      disabled: true,
+      title: 'This map layer is not implemented yet',
+      className: 'text-neutral-400 bg-neutral-700/30 border-white/10',
+    };
+  }
+
+  if (noRainviewerData) {
+    return {
+      label: 'NO DATA',
+      disabled: true,
+      title: 'Provider has no frame data for this layer right now',
+      className: 'text-orange-300 bg-orange-500/10 border-orange-500/20',
+    };
+  }
+
+  return {
+    label: 'LIVE',
+    disabled: false,
+    title: RAINVIEWER_LAYERS.includes(layer) ? 'Live radar provider available' : 'Layer available',
+    className: 'text-green-300 bg-green-500/10 border-green-500/20',
+  };
+}
+
+export default function LayerControls({ compact = false }: { compact?: boolean }) {
   const {
     activeLayers,
     toggleLayer,
@@ -21,30 +70,39 @@ export default function LayerControls() {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
-      <div className="flex-1 overflow-y-auto p-1 space-y-0.5 custom-scrollbar">
+      <div className={`flex-1 overflow-y-auto custom-scrollbar ${compact ? 'p-1 space-y-1' : 'p-1 space-y-0.5'}`}>
         {LAYERS_LIST.map((layer) => {
           const Icon = LAYER_ICONS[layer.id];
           const isActive = activeLayers.includes(layer.id);
-          const needsApiKey = OWM_LAYERS.includes(layer.id) && !hasOwmApiKey;
-          const isSoon = SOON_LAYERS.includes(layer.id);
-          const isRainviewer = RAINVIEWER_LAYERS.includes(layer.id);
-          const noRainviewerData =
-            (RADAR_LAYERS.includes(layer.id) && !rainviewerTs) ||
-            (layer.id === 'satellite' && !satelliteTs);
-          const isDisabled = needsApiKey || isSoon || noRainviewerData;
+          const status = getLayerStatus(layer.id, rainviewerTs, satelliteTs);
+          const isDisabled = status.disabled;
+
+          if (compact) {
+            return (
+              <button
+                key={layer.id}
+                title={`${layer.name} · ${status.label}`}
+                disabled={isDisabled}
+                onClick={() => !isDisabled && toggleLayer(layer.id)}
+                className={`relative w-9 h-9 rounded-lg border flex items-center justify-center transition-colors ${
+                  isDisabled
+                    ? 'opacity-35 cursor-not-allowed border-white/5 text-neutral-600 bg-black/20'
+                    : isActive
+                      ? 'bg-blue-600/20 border-blue-500/50 text-white'
+                      : 'bg-black/30 border-white/10 text-neutral-500 hover:text-white hover:border-white/20'
+                }`}
+              >
+                <Icon size={15} className={isActive && !isDisabled ? layer.color : ''} />
+                {!isDisabled && isActive && <span className="absolute right-1 top-1 w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />}
+                {isDisabled && <span className="absolute right-1 top-1 w-1.5 h-1.5 rounded-full bg-neutral-600" />}
+              </button>
+            );
+          }
 
           return (
             <label
               key={layer.id}
-              title={
-                needsApiKey
-                  ? 'Requires VITE_OWM_API_KEY in Vercel Environment Variables'
-                  : isSoon
-                    ? 'This map layer is not implemented yet'
-                    : noRainviewerData
-                      ? 'RainViewer has no frame data for this layer right now'
-                      : layer.name
-              }
+              title={status.title}
               className={`flex items-center gap-2 p-2 transition-colors border-l-2 rounded-r ${
                 isDisabled
                   ? 'opacity-45 cursor-not-allowed border-transparent text-neutral-500'
@@ -65,30 +123,9 @@ export default function LayerControls() {
               <Icon size={14} className={isActive && !isDisabled ? layer.color : 'opacity-40'} />
               <span className="flex-1 text-[11px] truncate">{layer.name}</span>
 
-              {needsApiKey && (
-                <span className="text-[8px] font-mono text-yellow-300 bg-yellow-500/10
-                                 border border-yellow-500/20 rounded px-1 py-0.5 shrink-0">
-                  API KEY
-                </span>
-              )}
-              {noRainviewerData && !needsApiKey && !isSoon && (
-                <span className="text-[8px] font-mono text-orange-300 bg-orange-500/10
-                                 border border-orange-500/20 rounded px-1 py-0.5 shrink-0">
-                  NO DATA
-                </span>
-              )}
-              {isRainviewer && !isDisabled && (
-                <span className="text-[8px] font-mono text-blue-300 bg-blue-500/10
-                                 border border-blue-500/20 rounded px-1 py-0.5 shrink-0">
-                  RADAR
-                </span>
-              )}
-              {isSoon && (
-                <span className="text-[8px] font-mono text-neutral-400 bg-neutral-700/30
-                                 border border-white/10 rounded px-1 py-0.5 shrink-0">
-                  SOON
-                </span>
-              )}
+              <span className={`text-[8px] font-mono border rounded px-1 py-0.5 shrink-0 ${status.className}`}>
+                {status.label}
+              </span>
               {isActive && !isDisabled && (
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shrink-0" />
               )}
@@ -98,22 +135,24 @@ export default function LayerControls() {
       </div>
 
       {/* Footer: tile attribution + theme toggle */}
-      <div className="p-2 border-t border-white/5 flex items-center justify-between gap-2">
-        <p className="text-[9px] text-neutral-600 leading-relaxed">
-          Radar/Satellite: RainViewer · Weather cards: Open-Meteo · OWM overlays need API key
-        </p>
-        <button
-          onClick={toggleTheme}
-          title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-          className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-white
-                     bg-neutral-800/60 hover:bg-neutral-700/60 border border-white/10
-                     rounded px-2 py-1 transition-colors shrink-0"
-        >
-          {theme === 'dark'
-            ? <><Sun size={10} /><span>Light</span></>
-            : <><Moon size={10} /><span>Dark</span></>}
-        </button>
-      </div>
+      {!compact && (
+        <div className="p-2 border-t border-white/5 flex items-center justify-between gap-2">
+          <p className="text-[9px] text-neutral-600 leading-relaxed">
+            LIVE = ready · NO DATA = provider empty · API KEY = add VITE_OWM_API_KEY
+          </p>
+          <button
+            onClick={toggleTheme}
+            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-white
+                       bg-neutral-800/60 hover:bg-neutral-700/60 border border-white/10
+                       rounded px-2 py-1 transition-colors shrink-0"
+          >
+            {theme === 'dark'
+              ? <><Sun size={10} /><span>Light</span></>
+              : <><Moon size={10} /><span>Dark</span></>}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
