@@ -117,8 +117,9 @@ export interface CompareLocation {
 
 export interface WeatherStore {
   activeLayers: LayerId[];
-  rainviewerTs: number | null;
-  satelliteTs: number | null;
+  // RainViewer v2 now returns tile paths such as /v2/radar/<frame-id>.
+  rainviewerTs: string | null;
+  satelliteTs: string | null;
 
   selectedLocation: [number, number];
   locationName: string;
@@ -179,26 +180,12 @@ export interface LayerDef {
 // ── Charts ───────────────────────────────────────────────────
 export interface HourlyChartPoint {
   time: string;
-  temp: number;
-  tempLY: number | null; // last year
-  rain: number;
-  prob: number;
-}
-
-export interface TimelineRow {
-  time: string;
-  temp: number;
-  rain: number;
-  prob: number;
-  wind: number | string;
-  hum: number | string;
-  uv: number | string;
-}
-
-// ── AQI ─────────────────────────────────────────────────────
-export interface AQILevel {
-  label: string;
-  color: string;
-  bg: string;
-  max: number;
+  temp?: number;
+  tempPrev?: number;
+  rain?: number;
+  rainProb?: number;
+  wind?: number;
+  humidity?: number;
+  pressure?: number;
+  uv?: number;
 }
