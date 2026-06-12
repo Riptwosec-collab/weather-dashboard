@@ -3,7 +3,7 @@ import Map, { Source, Layer, Marker, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { LocateFixed, Share2, Check } from 'lucide-react';
 import { useWeatherStore } from '../store/weatherStore';
-import { buildOverlayLayers } from '../utils/helpers';
+import { buildOverlayLayers, clickedLocationLabel, reverseGeocodeName } from '../utils/helpers';
 import { useShareableUrl } from '../hooks/useShareableUrl';
 import { ErrorBoundary } from './ErrorBoundary';
 
@@ -28,6 +28,7 @@ function WeatherMapInner() {
   const [copied, setCopied]       = useState(false);
 
   const mapRef = useRef<MapRef>(null);
+  const clickRequestRef = useRef(0);
   const { copyShareLink } = useShareableUrl();
 
   // ── Fly to new location whenever selectedLocation changes ──
@@ -54,13 +55,27 @@ function WeatherMapInner() {
              lat: e.lngLat.lat.toFixed(4), lng: e.lngLat.lng.toFixed(4) });
   }, []);
 
+  const selectMapLocation = useCallback(async (latValue: number, lngValue: number) => {
+    const requestId = ++clickRequestRef.current;
+    setGeoError(null);
+    setSelectedLocation(latValue, lngValue, clickedLocationLabel(latValue, lngValue));
+
+    const resolvedName = await reverseGeocodeName(latValue, lngValue);
+    if (clickRequestRef.current !== requestId) return;
+    setSelectedLocation(latValue, lngValue, resolvedName);
+  }, [setSelectedLocation]);
+
   const handleAutoLocate = useCallback(() => {
     if (!navigator.geolocation) { setGeoError('Geolocation not supported'); return; }
     setGeoLoading(true);
     setGeoError(null);
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        setSelectedLocation(pos.coords.latitude, pos.coords.longitude, 'My Location');
+      async (pos) => {
+        const nextLat = pos.coords.latitude;
+        const nextLng = pos.coords.longitude;
+        setSelectedLocation(nextLat, nextLng, 'My Location');
+        const resolvedName = await reverseGeocodeName(nextLat, nextLng);
+        setSelectedLocation(nextLat, nextLng, resolvedName === clickedLocationLabel(nextLat, nextLng) ? 'My Location' : resolvedName);
         setGeoLoading(false);
       },
       (err) => { setGeoError(err.message); setGeoLoading(false); },
@@ -86,7 +101,7 @@ function WeatherMapInner() {
         mapStyle={MAP_STYLE}
         onMouseMove={onMouseMove}
         onMouseLeave={() => setHud((p) => ({ ...p, show: false }))}
-        onClick={(e) => setSelectedLocation(e.lngLat.lat, e.lngLat.lng)}
+        onClick={(e) => selectMapLocation(e.lngLat.lat, e.lngLat.lng)}
         interactiveLayerIds={[]}
       >
         {/* ── tile overlays ── */}
@@ -112,7 +127,7 @@ function WeatherMapInner() {
         <Marker longitude={lng} latitude={lat} anchor="bottom">
           <div className="flex flex-col items-center pointer-events-none select-none">
             <div className="bg-neutral-900/90 border border-blue-500/60 text-[9px] text-white
-                            px-1.5 py-0.5 rounded shadow-lg mb-0.5 max-w-[120px] truncate text-center">
+                            px-1.5 py-0.5 rounded shadow-lg mb-0.5 max-w-[160px] truncate text-center">
               {locationName}
             </div>
             <div className="relative">
