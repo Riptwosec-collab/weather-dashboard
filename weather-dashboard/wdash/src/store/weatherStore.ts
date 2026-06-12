@@ -44,6 +44,7 @@ export const useWeatherStore = create<WeatherStore>()(
       // state
       activeLayers: ['radar'] as LayerId[],
       rainviewerTs: null,
+      satelliteTs: null,
 
       selectedLocation: [13.7563, 100.5018] as [number, number],
       locationName: 'Bangkok',
@@ -118,13 +119,17 @@ export const useWeatherStore = create<WeatherStore>()(
 
       setPushEnabled: (v) => set({ pushEnabled: v }),
 
-      // ── async: RainViewer timestamp ──────────────────────
+      // ── async: RainViewer timestamps ──────────────────────
       fetchRainviewerTs: async () => {
         try {
           const res  = await fetch('https://api.rainviewer.com/public/weather-maps.json');
           const json = await res.json();
-          const ts: number | undefined = json.radar?.past?.slice(-1)[0]?.time;
-          if (ts) set({ rainviewerTs: ts });
+          const radarTs: number | undefined = json.radar?.past?.slice(-1)[0]?.time;
+          const satTs: number | undefined = json.satellite?.infrared?.slice(-1)[0]?.time;
+          set({
+            ...(radarTs ? { rainviewerTs: radarTs } : {}),
+            ...(satTs ? { satelliteTs: satTs } : {}),
+          });
         } catch { /* radar unavailable */ }
       },
 
