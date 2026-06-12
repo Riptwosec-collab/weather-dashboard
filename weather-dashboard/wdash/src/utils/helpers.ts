@@ -41,6 +41,51 @@ export const windDir = (deg: number | undefined): string => {
   return DIRECTIONS[Math.round(deg / 45) % 8];
 };
 
+export const clickedLocationLabel = (lat: number, lng: number) =>
+  `Selected Point ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+interface ReverseGeocodeResponse {
+  city?: string;
+  locality?: string;
+  principalSubdivision?: string;
+  countryName?: string;
+  localityInfo?: {
+    administrative?: Array<{ name?: string; adminLevel?: number }>;
+  };
+}
+
+export async function reverseGeocodeName(lat: number, lng: number): Promise<string> {
+  const fallback = clickedLocationLabel(lat, lng);
+
+  try {
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), 3500);
+    const url = new URL('https://api.bigdatacloud.net/data/reverse-geocode-client');
+    url.searchParams.set('latitude', String(lat));
+    url.searchParams.set('longitude', String(lng));
+    url.searchParams.set('localityLanguage', 'en');
+
+    const res = await fetch(url.toString(), { signal: controller.signal });
+    window.clearTimeout(timeout);
+    if (!res.ok) return fallback;
+
+    const data = await res.json() as ReverseGeocodeResponse;
+    const adminName = data.localityInfo?.administrative
+      ?.find((item) => item.adminLevel === 8 || item.adminLevel === 6 || item.adminLevel === 4)
+      ?.name;
+
+    const parts = [
+      data.city || data.locality || adminName,
+      data.principalSubdivision,
+      data.countryName,
+    ].filter((part, index, arr): part is string => Boolean(part && arr.indexOf(part) === index));
+
+    return parts.length ? parts.join(', ') : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 export const LAYERS_LIST: LayerDef[] = [
   { id: 'radar',     name: 'Rain Radar',       color: 'text-blue-400'   },
   { id: 'satellite', name: 'Satellite Clouds', color: 'text-sky-300'    },
