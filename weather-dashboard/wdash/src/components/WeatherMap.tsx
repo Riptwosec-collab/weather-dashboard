@@ -149,8 +149,8 @@ function WeatherMapInner() {
       <div className="absolute top-4 right-4 z-10 bg-black/70 border border-white/10 rounded-lg
                       px-3 py-2 shadow-2xl backdrop-blur-sm pointer-events-none">
         <div className="text-[9px] text-neutral-400 uppercase tracking-[0.2em] mb-1.5">Boundaries</div>
-        <div className="flex items-center gap-2 text-[10px] text-neutral-100">
-          <span className="w-8 h-[2px] rounded bg-white shadow-[0_0_8px_rgba(186,230,253,0.95)]" />
+        <div className="flex items-center gap-2 text-[10px] text-red-100">
+          <span className="w-8 h-[2px] rounded bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.95)]" />
           <span>Country</span>
         </div>
         <div className="flex items-center gap-2 text-[10px] text-cyan-100 mt-1">
