@@ -37,6 +37,18 @@ const aqiKey = (lat: number, lng: number) => `aqi_${lat.toFixed(2)}_${lng.toFixe
 const histKey = (lat: number, lng: number, year: number) =>
   `hist_${lat.toFixed(2)}_${lng.toFixed(2)}_${year}`;
 
+type RainViewerFrame = {
+  time?: number;
+  path?: string;
+};
+
+const latestRainViewerPath = (frames: RainViewerFrame[] | undefined, fallbackType: 'radar' | 'satellite') => {
+  const latest = frames?.slice(-1)[0];
+  if (!latest) return undefined;
+  if (latest.path) return latest.path;
+  return latest.time ? `/v2/${fallbackType}/${latest.time}` : undefined;
+};
+
 // ── store ────────────────────────────────────────────────────
 export const useWeatherStore = create<WeatherStore>()(
   persist(
@@ -119,16 +131,16 @@ export const useWeatherStore = create<WeatherStore>()(
 
       setPushEnabled: (v) => set({ pushEnabled: v }),
 
-      // ── async: RainViewer timestamps ──────────────────────
+      // ── async: RainViewer frame paths ─────────────────────
       fetchRainviewerTs: async () => {
         try {
           const res  = await fetch('https://api.rainviewer.com/public/weather-maps.json');
           const json = await res.json();
-          const radarTs: number | undefined = json.radar?.past?.slice(-1)[0]?.time;
-          const satTs: number | undefined = json.satellite?.infrared?.slice(-1)[0]?.time;
+          const radarPath = latestRainViewerPath(json.radar?.past, 'radar');
+          const satPath   = latestRainViewerPath(json.satellite?.infrared, 'satellite');
           set({
-            ...(radarTs ? { rainviewerTs: radarTs } : {}),
-            ...(satTs ? { satelliteTs: satTs } : {}),
+            ...(radarPath ? { rainviewerTs: radarPath } : {}),
+            ...(satPath ? { satelliteTs: satPath } : {}),
           });
         } catch { /* radar unavailable */ }
       },
@@ -206,7 +218,7 @@ export const useWeatherStore = create<WeatherStore>()(
           const res = await fetch(url);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data: HistoricalData = await res.json();
-          writeCache(histKey(lat, lng, lastYear), data);
+          writeCache(histKey(lat, lng), data);
           set({ historicalData: data });
         } catch { /* historical is optional */ }
       },
