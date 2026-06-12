@@ -37,6 +37,14 @@ const aqiKey = (lat: number, lng: number) => `aqi_${lat.toFixed(2)}_${lng.toFixe
 const histKey = (lat: number, lng: number, year: number) =>
   `hist_${lat.toFixed(2)}_${lng.toFixed(2)}_${year}`;
 
+const clickedPointName = (lat: number, lng: number) =>
+  `Selected Point ${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+
+const nextLocationName = (lat: number, lng: number, name?: string) => {
+  const trimmed = name?.trim();
+  return trimmed || clickedPointName(lat, lng);
+};
+
 type RainViewerFrame = {
   time?: number;
   path?: string;
@@ -116,7 +124,11 @@ export const useWeatherStore = create<WeatherStore>()(
         }),
 
       setSelectedLocation: (lat, lng, name) =>
-        set({ selectedLocation: [lat, lng], currentTime: 0, ...(name ? { locationName: name } : {}) }),
+        set({
+          selectedLocation: [lat, lng],
+          locationName: nextLocationName(lat, lng, name),
+          currentTime: 0,
+        }),
 
       setCurrentTime: (i) => set({ currentTime: i }),
 
