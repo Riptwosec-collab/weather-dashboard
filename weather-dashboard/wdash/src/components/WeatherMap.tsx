@@ -6,6 +6,7 @@ import { useWeatherStore } from '../store/weatherStore';
 import { buildOverlayLayers, clickedLocationLabel, reverseGeocodeName } from '../utils/helpers';
 import { useShareableUrl } from '../hooks/useShareableUrl';
 import { ErrorBoundary } from './ErrorBoundary';
+import AdminBoundaryLayers from './AdminBoundaryLayers';
 
 const MAP_STYLE =
   import.meta.env.VITE_MAP_STYLE ??
@@ -105,6 +106,8 @@ function WeatherMapInner() {
         onClick={(e) => selectMapLocation(e.lngLat.lat, e.lngLat.lng)}
         interactiveLayerIds={[]}
       >
+        <AdminBoundaryLayers />
+
         {/* ── tile overlays ── */}
         {sources.map((src) => (
           <Source
@@ -142,6 +145,19 @@ function WeatherMapInner() {
           </div>
         </Marker>
       </Map>
+
+      <div className="absolute top-4 right-4 z-10 bg-black/70 border border-white/10 rounded-lg
+                      px-3 py-2 shadow-2xl backdrop-blur-sm pointer-events-none">
+        <div className="text-[9px] text-neutral-400 uppercase tracking-[0.2em] mb-1">Boundaries</div>
+        <div className="flex items-center gap-2 text-[10px] text-neutral-200">
+          <span className="w-8 h-0.5 rounded bg-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.8)]" />
+          <span>Province</span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] text-neutral-300 mt-1">
+          <span className="w-8 border-t border-dashed border-yellow-300" />
+          <span>District</span>
+        </div>
+      </div>
 
       {/* ── radar legend ── */}
       {showRadarLegend && (
