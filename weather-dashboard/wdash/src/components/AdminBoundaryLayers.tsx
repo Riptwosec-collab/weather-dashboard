@@ -13,7 +13,7 @@ const roundedLine = {
 export default function AdminBoundaryLayers() {
   return (
     <>
-      {/* Country border: distinct magenta/purple so it never blends with province or district lines */}
+      {/* Country border: red so it stands apart from cyan province and amber district lines */}
       <Layer
         id="admin-country-glow"
         type="line"
@@ -22,9 +22,9 @@ export default function AdminBoundaryLayers() {
         filter={COUNTRY_FILTER}
         layout={roundedLine}
         paint={{
-          'line-color': '#f0abfc',
+          'line-color': '#ef4444',
           'line-width': ['interpolate', ['linear'], ['zoom'], 3, 5.5, 6, 7, 10, 9.5],
-          'line-opacity': 0.24,
+          'line-opacity': 0.28,
           'line-blur': 4.8,
         } as any}
       />
@@ -36,9 +36,9 @@ export default function AdminBoundaryLayers() {
         filter={COUNTRY_FILTER}
         layout={roundedLine}
         paint={{
-          'line-color': '#e879f9',
+          'line-color': '#f87171',
           'line-width': ['interpolate', ['linear'], ['zoom'], 3, 1.35, 6, 2.1, 10, 3.1],
-          'line-opacity': ['interpolate', ['linear'], ['zoom'], 3, 0.94, 8, 0.82, 11, 0.72],
+          'line-opacity': ['interpolate', ['linear'], ['zoom'], 3, 0.96, 8, 0.86, 11, 0.76],
         } as any}
       />
       <Layer
@@ -49,7 +49,7 @@ export default function AdminBoundaryLayers() {
         filter={COUNTRY_FILTER}
         layout={roundedLine}
         paint={{
-          'line-color': '#fdf4ff',
+          'line-color': '#fee2e2',
           'line-width': ['interpolate', ['linear'], ['zoom'], 3, 0.28, 6, 0.45, 10, 0.75],
           'line-opacity': 0.82,
           'line-dasharray': [5.5, 1.8],
