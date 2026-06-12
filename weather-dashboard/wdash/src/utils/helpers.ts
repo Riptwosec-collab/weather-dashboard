@@ -1,6 +1,10 @@
 import { CloudRain, Wind, Thermometer, Gauge, Waves, Sun, CloudLightning } from 'lucide-react';
 import type { LayerDef, LayerId } from '../types';
 
+// ── External tile API status ─────────────────────────────────
+export const OWM_API_KEY = import.meta.env.VITE_OWM_API_KEY as string | undefined;
+export const hasOwmApiKey = Boolean(OWM_API_KEY && OWM_API_KEY.trim() && OWM_API_KEY !== 'demo');
+
 // ── Temperature helpers ────────────────────────────────────
 export const celsiusToF = (c: number): number => +(c * 9 / 5 + 32).toFixed(1);
 
@@ -36,8 +40,8 @@ export const LAYERS_LIST: LayerDef[] = [
   { id: 'wind',     name: 'Wind Gusts',       color: 'text-teal-400'   },
   { id: 'temp',     name: 'Temperature',      color: 'text-red-400'    },
   { id: 'pressure', name: 'Pressure Isobars', color: 'text-purple-400' },
-  { id: 'waves',    name: 'Swell & Waves',    color: 'text-cyan-400'   },
   { id: 'clouds',   name: 'Cloud Cover',      color: 'text-gray-400'   },
+  { id: 'waves',    name: 'Swell & Waves',    color: 'text-cyan-400'   },
   { id: 'storms',   name: 'Thunderstorms',    color: 'text-yellow-400' },
 ];
 
@@ -68,7 +72,7 @@ interface TileLayer {
 export function buildOverlayLayers(
   activeLayers: LayerId[],
   rainviewerTs: number | null,
-  owmKey = import.meta.env.VITE_OWM_API_KEY ?? 'demo'
+  owmKey = OWM_API_KEY
 ): { sources: TileSource[]; layers: TileLayer[] } {
   const sources: TileSource[] = [];
   const layers: TileLayer[] = [];
@@ -93,6 +97,10 @@ export function buildOverlayLayers(
       { attribution: '© RainViewer' }
     );
   }
+
+  // OpenWeatherMap raster overlays require VITE_OWM_API_KEY.
+  // Without a key, skip these sources so the UI does not fire failing tile requests.
+  if (!owmKey || owmKey === 'demo') return { sources, layers };
 
   if (activeLayers.includes('wind')) {
     push(
