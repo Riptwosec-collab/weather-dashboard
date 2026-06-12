@@ -11,6 +11,7 @@ const RAINVIEWER_RADAR_MAX_ZOOM = 10;
 const RAINVIEWER_SATELLITE_MAX_ZOOM = 5;
 const OWM_ATTRIBUTION = 'OpenWeatherMap';
 const RAINVIEWER_ATTRIBUTION = 'RainViewer';
+const RAINVIEWER_HOST = 'https://tilecache.rainviewer.com';
 
 export const celsiusToF = (c: number): number => +(c * 9 / 5 + 32).toFixed(1);
 
@@ -77,10 +78,14 @@ interface TileLayer {
   paint: Record<string, unknown>;
 }
 
+const cleanRainViewerPath = (path: string) => path.startsWith('/') ? path : `/${path}`;
+const rainViewerTileUrl = (path: string, colorScheme: number, options = '1_1') =>
+  `${RAINVIEWER_HOST}${cleanRainViewerPath(path)}/256/{z}/{x}/{y}/${colorScheme}/${options}.png`;
+
 export function buildOverlayLayers(
   activeLayers: LayerId[],
-  rainviewerTs: number | null,
-  satelliteTs: number | null,
+  rainviewerTs: string | null,
+  satelliteTs: string | null,
   owmKey = OWM_API_KEY
 ): { sources: TileSource[]; layers: TileLayer[] } {
   const sources: TileSource[] = [];
@@ -100,7 +105,7 @@ export function buildOverlayLayers(
   if (activeLayers.includes('radar') && rainviewerTs) {
     push(
       'rainviewer-radar-src',
-      [`https://tilecache.rainviewer.com/v2/radar/${rainviewerTs}/256/{z}/{x}/{y}/2/1_1.png`],
+      [rainViewerTileUrl(rainviewerTs, 2, '1_1')],
       'rainviewer-radar-layer',
       { 'raster-opacity': 0.72, 'raster-contrast': 0.08, 'raster-saturation': 0.2, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_RADAR_MAX_ZOOM }
@@ -110,9 +115,9 @@ export function buildOverlayLayers(
   if (activeLayers.includes('storms') && rainviewerTs) {
     push(
       'rainviewer-storm-src',
-      [`https://tilecache.rainviewer.com/v2/radar/${rainviewerTs}/256/{z}/{x}/{y}/4/1_1.png`],
+      [rainViewerTileUrl(rainviewerTs, 4, '1_1')],
       'rainviewer-storm-layer',
-      { 'raster-opacity': 0.8, 'raster-contrast': 0.18, 'raster-saturation': 0.35, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.78, 'raster-contrast': 0.2, 'raster-saturation': 0.4, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_RADAR_MAX_ZOOM }
     );
   }
@@ -120,7 +125,7 @@ export function buildOverlayLayers(
   if (activeLayers.includes('satellite') && satelliteTs) {
     push(
       'rainviewer-satellite-src',
-      [`https://tilecache.rainviewer.com/v2/satellite/${satelliteTs}/256/{z}/{x}/{y}/0/0_0.png`],
+      [rainViewerTileUrl(satelliteTs, 0, '0_0')],
       'rainviewer-satellite-layer',
       { 'raster-opacity': 0.45, 'raster-contrast': 0.08, 'raster-saturation': -0.2, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_SATELLITE_MAX_ZOOM }
@@ -168,5 +173,7 @@ export const formatDay = (iso: string | undefined): string => {
   if (!iso) return '--';
   try {
     return new Date(iso).toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
-  } catch { return '--'; }
+  } catch {
+    return '--';
+  }
 };
