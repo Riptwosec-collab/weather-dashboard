@@ -92,6 +92,7 @@ function WeatherMapInner() {
   }, [copyShareLink]);
 
   const { sources, layers } = buildOverlayLayers(activeLayers, rainviewerTs, satelliteTs);
+  const showRadarLegend = activeLayers.includes('radar') || activeLayers.includes('storms');
 
   return (
     <div className="w-full h-full relative cursor-crosshair">
@@ -142,6 +143,17 @@ function WeatherMapInner() {
         </Marker>
       </Map>
 
+      {/* ── radar legend ── */}
+      {showRadarLegend && (
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/75 border border-white/10
+                        rounded-lg px-3 py-2 shadow-2xl backdrop-blur-sm min-w-[260px] pointer-events-none">
+          <div className="flex items-center justify-between text-[8px] text-neutral-400 mb-1">
+            <span>Light rain</span><span>Moderate</span><span>Heavy</span><span>Storm</span>
+          </div>
+          <div className="h-2 rounded-full bg-gradient-to-r from-sky-500 via-blue-500 via-yellow-400 to-red-500" />
+        </div>
+      )}
+
       {/* ── coordinate HUD ── */}
       {hud.show && (
         <div
@@ -156,7 +168,7 @@ function WeatherMapInner() {
       {/* ── action buttons ── */}
       <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-2">
         {geoError && (
-          <div className="text-[9px] text-red-400 bg-black/70 rounded px-2 py-1 max-w-[160px] text-right">
+          <div className="text-[9px] text-red-400 bg-black/70 rounded px-2 py-1 max-w-[180px] text-right">
             {geoError}
           </div>
         )}
@@ -165,12 +177,13 @@ function WeatherMapInner() {
         <button
           onClick={handleShare}
           title="Copy share link"
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-900/90
-                     border border-white/20 shadow-lg hover:bg-neutral-800 transition-colors"
+          className="h-9 flex items-center gap-2 rounded-full bg-neutral-900/90
+                     border border-white/20 shadow-lg hover:bg-neutral-800 transition-colors px-3"
         >
           {copied
             ? <Check size={15} className="text-green-400" />
             : <Share2 size={15} className="text-neutral-300" />}
+          <span className="hidden lg:inline text-[10px] text-neutral-300">Share</span>
         </button>
 
         {/* Auto-locate button */}
@@ -178,13 +191,14 @@ function WeatherMapInner() {
           onClick={handleAutoLocate}
           disabled={geoLoading}
           title="Use my location"
-          className="w-9 h-9 flex items-center justify-center rounded-full bg-neutral-900/90
-                     border border-white/20 shadow-lg hover:bg-neutral-800 transition-colors
-                     disabled:opacity-50"
+          className="h-9 flex items-center gap-2 rounded-full bg-blue-600/90
+                     border border-blue-400/30 shadow-lg hover:bg-blue-500 transition-colors
+                     disabled:opacity-50 px-3 text-white"
         >
           {geoLoading
-            ? <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-            : <LocateFixed size={16} className="text-blue-400" />}
+            ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            : <LocateFixed size={16} />}
+          <span className="text-[10px] font-semibold">Use My Location</span>
         </button>
       </div>
 
