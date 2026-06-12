@@ -1,13 +1,22 @@
-import React from 'react';
-import { Search, X, MapPin, Bookmark, BookmarkCheck, LocateFixed } from 'lucide-react';
+import React, { useState } from 'react';
+import { Search, X, MapPin, Bookmark, BookmarkCheck, LocateFixed, Navigation } from 'lucide-react';
 import { useGeocoding } from '../hooks/useGeocoding';
 import { useWeatherStore } from '../store/weatherStore';
 import type { SavedLocation } from '../types';
+
+const QUICK_CITIES = [
+  { name: 'Bangkok', lat: 13.7563, lng: 100.5018 },
+  { name: 'Chon Buri', lat: 13.3611, lng: 100.9847 },
+  { name: 'Ayutthaya', lat: 14.3692, lng: 100.5877 },
+  { name: 'Chiang Mai', lat: 18.7883, lng: 98.9853 },
+];
 
 export default function CitySearch() {
   const { setSelectedLocation, savedLocations, saveLocation, removeLocation, selectedLocation, locationName } =
     useWeatherStore();
   const { query, setQuery, results, isLoading, clear } = useGeocoding();
+  const [geoLoading, setGeoLoading] = useState(false);
+  const [geoError, setGeoError] = useState<string | null>(null);
 
   const [lat, lng] = selectedLocation;
 
@@ -31,6 +40,26 @@ export default function CitySearch() {
       };
       saveLocation(loc);
     }
+  };
+
+  const handleCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setGeoError('Geolocation not supported');
+      return;
+    }
+    setGeoLoading(true);
+    setGeoError(null);
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        setSelectedLocation(pos.coords.latitude, pos.coords.longitude, 'My Location');
+        setGeoLoading(false);
+      },
+      (err) => {
+        setGeoError(err.message);
+        setGeoLoading(false);
+      },
+      { timeout: 10_000 }
+    );
   };
 
   return (
@@ -100,6 +129,36 @@ export default function CitySearch() {
           {isSaved ? <BookmarkCheck size={12} /> : <Bookmark size={12} />}
         </button>
       </div>
+
+      {/* Quick actions */}
+      <div className="flex gap-1">
+        <button
+          onClick={handleCurrentLocation}
+          disabled={geoLoading}
+          className="flex-1 flex items-center justify-center gap-1.5 text-[9px] font-semibold
+                     bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/20 text-blue-300
+                     rounded py-1 transition-colors disabled:opacity-60"
+        >
+          {geoLoading ? <span className="w-2 h-2 border border-blue-300 border-t-transparent rounded-full animate-spin" /> : <Navigation size={9} />}
+          Use My Location
+        </button>
+        {QUICK_CITIES.map((city) => (
+          <button
+            key={city.name}
+            onClick={() => setSelectedLocation(city.lat, city.lng, city.name)}
+            className="px-2 py-1 rounded border border-white/10 bg-black/30 text-[9px]
+                       text-neutral-400 hover:text-white hover:border-white/20 transition-colors"
+          >
+            {city.name.split(' ')[0]}
+          </button>
+        ))}
+      </div>
+
+      {geoError && (
+        <div className="text-[9px] text-red-400 bg-red-500/10 border border-red-500/20 rounded px-2 py-1">
+          {geoError}
+        </div>
+      )}
 
       {/* Saved location pills */}
       {savedLocations.length > 0 && (
