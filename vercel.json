@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm --prefix weather-dashboard/wdash install",
-  "buildCommand": "npm --prefix weather-dashboard/wdash run build",
+  "installCommand": "cd weather-dashboard/wdash && npm install --ignore-scripts",
+  "buildCommand": "cd weather-dashboard/wdash && npm run build",
   "outputDirectory": "weather-dashboard/wdash/dist",
   "rewrites": [
     {
