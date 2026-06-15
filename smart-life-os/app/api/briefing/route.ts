@@ -4,7 +4,7 @@ import type { WidgetId } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-const defaultWidgets: WidgetId[] = ["weather", "food", "market", "tech"];
+const defaultWidgets: WidgetId[] = ["weather", "food", "market"];
 const widgetIds = new Set<WidgetId>(defaultWidgets);
 
 type BriefingRequest = {
@@ -25,7 +25,7 @@ function fallbackLines(activeWidgets: WidgetId[]): string[] {
   const hasMarket = activeWidgets.includes("market");
 
   return [
-    hasWeather ? "วันนี้เริ่มจากเช็คฝน PM2.5 และเส้นทางก่อนออกจากบ้าน" : "วันนี้ dashboard พร้อมสรุปงานสำคัญจาก widget ที่เปิดไว้",
+    hasWeather ? "วันนี้เริ่มจากเช็คฝน PM2.5 และเส้นทางก่อนออกจากบ้าน" : "วันนี้ dashboard พร้อมสรุปข้อมูลสำคัญจาก widget ที่เปิดไว้",
     hasMarket ? "ตลาดและต้นทุนเฉลี่ยควรถูกใช้เพื่อดูภาพรวม ไม่ใช่คำแนะนำซื้อขาย" : "เปิด widget ที่ใช้บ่อยไว้บนสุดเพื่อให้เริ่มวันได้เร็วขึ้น"
   ];
 }
