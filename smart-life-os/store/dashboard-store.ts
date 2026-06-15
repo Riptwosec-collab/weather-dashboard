@@ -17,22 +17,15 @@ const baseWidgets: WidgetConfig[] = [
     description: "หาร้านชาบู ยากินิกุ อีสาน บุฟเฟต์ พร้อมโปรบัตร",
     enabled: true,
     order: 1
-  },
-  {
-    id: "market",
-    title: "Market & Wealth",
-    description: "หุ้น คริปโต ทอง และตัวคำนวณ average cost",
-    enabled: true,
-    order: 2
   }
 ];
 
 const roleOrder: Record<LifestyleRole, WidgetId[]> = {
-  traveler: ["weather", "food", "market"],
-  investor: ["market", "weather", "food"],
-  "tech-worker": ["weather", "market", "food"],
-  foodie: ["food", "weather", "market"],
-  balanced: ["weather", "food", "market"]
+  traveler: ["weather", "food"],
+  investor: ["weather", "food"],
+  "tech-worker": ["weather", "food"],
+  foodie: ["food", "weather"],
+  balanced: ["weather", "food"]
 };
 
 type DashboardState = {
