@@ -24,22 +24,15 @@ const baseWidgets: WidgetConfig[] = [
     description: "หุ้น คริปโต ทอง และตัวคำนวณ average cost",
     enabled: true,
     order: 2
-  },
-  {
-    id: "tech",
-    title: "Tech & Security Tools",
-    description: "WHOIS, IP geo, DHCP, MAC converter และ flashcards",
-    enabled: true,
-    order: 3
   }
 ];
 
 const roleOrder: Record<LifestyleRole, WidgetId[]> = {
-  traveler: ["weather", "food", "tech", "market"],
-  investor: ["market", "weather", "tech", "food"],
-  "tech-worker": ["tech", "weather", "market", "food"],
-  foodie: ["food", "weather", "market", "tech"],
-  balanced: ["weather", "food", "market", "tech"]
+  traveler: ["weather", "food", "market"],
+  investor: ["market", "weather", "food"],
+  "tech-worker": ["weather", "market", "food"],
+  foodie: ["food", "weather", "market"],
+  balanced: ["weather", "food", "market"]
 };
 
 type DashboardState = {
