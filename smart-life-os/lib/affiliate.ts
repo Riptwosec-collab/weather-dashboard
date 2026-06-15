@@ -32,17 +32,7 @@ const affiliateCatalog: Record<WidgetId, AffiliateCard[]> = {
       href: "https://www.lazada.co.th/tag/restaurant-promotion/"
     }
   ],
-  market: [
-    {
-      id: "market-notebook-stand",
-      widgetId: "market",
-      title: "แท่นวางโน้ตบุ๊กสำหรับดูกราฟ",
-      description: "จัดโต๊ะให้ดูกราฟ หุ้น ทอง และคริปโตได้ถนัดขึ้น",
-      label: "Desk setup",
-      cta: "ดูของจัดโต๊ะ",
-      href: "https://shopee.co.th/search?keyword=notebook%20stand%20desk%20setup"
-    }
-  ],
+  market: [],
   tech: []
 };
 
