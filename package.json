@@ -4,11 +4,17 @@
   "private": true,
   "type": "module",
   "workspaces": [
-    "weather-dashboard/wdash"
+    "weather-dashboard/wdash",
+    "smart-life-os"
   ],
   "scripts": {
     "dev": "npm run dev --workspace weather-dashboard",
     "build": "npm run build --workspace weather-dashboard",
-    "preview": "npm run preview --workspace weather-dashboard"
+    "preview": "npm run preview --workspace weather-dashboard",
+    "smart:dev": "npm run dev --workspace smart-life-os",
+    "smart:build": "npm run build --workspace smart-life-os",
+    "smart:start": "npm run start --workspace smart-life-os",
+    "smart:lint": "npm run lint --workspace smart-life-os",
+    "smart:typecheck": "npm run typecheck --workspace smart-life-os"
   }
 }
