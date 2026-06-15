@@ -10,6 +10,7 @@ Modular personal dashboard web app for Thai users. This app is added beside the 
 - Zustand
 - MapLibre GL
 - Next.js API Routes
+- Optional Upstash Redis cache
 
 ## Run locally
 
@@ -61,21 +62,22 @@ External APIs are called server-side from route handlers only.
 ```env
 CLAUDE_API_KEY=
 CLAUDE_MODEL=claude-3-5-haiku-latest
+SMART_LIFE_OS_USE_REDIS=1
 ```
+
+When Redis is enabled, configure the Upstash environment expected by `Redis.fromEnv()` in the hosting provider. Without Redis, the app falls back to in-memory cache for local development.
 
 Food Radar currently ships with safe mock data, ready to swap to Google Places or Foursquare in `/app/api/places/route.ts`.
 
 ## Cache policy
 
-Current implementation uses an in-memory cache helper with these TTLs:
+The cache helper keeps the same TTL policy whether Redis or local memory is used:
 
 - weather: 15 minutes
 - market: 1 minute
 - places: 6 hours
 - briefing: 10 minutes
 - tech: 30 minutes
-
-For production, replace `lib/cache.ts` with Redis/Upstash implementation while keeping the same `cachedJson` interface.
 
 ## Deploy notes
 
