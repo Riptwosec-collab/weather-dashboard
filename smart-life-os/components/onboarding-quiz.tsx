@@ -4,17 +4,17 @@ import { useState } from "react";
 import type { LifestyleRole } from "@/lib/types";
 import { useDashboardStore } from "@/store/dashboard-store";
 
-const roles: Array<{ id: LifestyleRole; label: string; detail: string }> = [
+type VisibleRole = Extract<LifestyleRole, "traveler" | "foodie" | "balanced">;
+
+const roles: Array<{ id: VisibleRole; label: string; detail: string }> = [
   { id: "traveler", label: "Traveler", detail: "เน้นฝน แผนที่ และร้านใกล้ตัว" },
-  { id: "investor", label: "Investor", detail: "เน้นตลาด หุ้น ทอง และคริปโต" },
-  { id: "tech-worker", label: "Tech Worker", detail: "เน้นเครื่องมือ Network และ Security" },
   { id: "foodie", label: "Foodie", detail: "เน้นร้านอาหารและโปรโมชัน" },
-  { id: "balanced", label: "Balanced", detail: "ใช้งานครบทุกด้าน" }
+  { id: "balanced", label: "Balanced", detail: "ใช้งานอากาศและร้านอาหารแบบสมดุล" }
 ];
 
 export function OnboardingQuiz() {
   const completeOnboarding = useDashboardStore((state) => state.completeOnboarding);
-  const [role, setRole] = useState<LifestyleRole>("balanced");
+  const [role, setRole] = useState<VisibleRole>("balanced");
   const [province, setProvince] = useState("กรุงเทพฯ");
   const [budgetFocus, setBudgetFocus] = useState<"saving" | "balanced" | "premium">("balanced");
 
@@ -26,7 +26,7 @@ export function OnboardingQuiz() {
         <p className="mt-2 text-sm text-slate-300">ตอบสั้น ๆ แล้วระบบจะเรียง widget ให้เหมาะกับคุณ</p>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {roles.map((item) => (
           <button
             key={item.id}
@@ -52,7 +52,7 @@ export function OnboardingQuiz() {
           />
         </label>
         <label className="block">
-          <span className="text-sm font-medium text-slate-200">แนวใช้เงิน</span>
+          <span className="text-sm font-medium text-slate-200">สไตล์แนะนำร้าน</span>
           <select
             className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-white outline-none focus:border-cyan-300"
             value={budgetFocus}
