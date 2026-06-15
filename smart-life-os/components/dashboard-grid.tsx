@@ -2,18 +2,14 @@
 
 import { AiBriefingCard } from "@/components/ai-briefing-card";
 import { FoodRadarWidget } from "@/components/widgets/food-radar-widget";
-import { MarketWidget } from "@/components/widgets/market-widget";
-import { TechUtilitiesWidget } from "@/components/widgets/tech-utilities-widget";
 import { WeatherMapWidget } from "@/components/widgets/weather-map-widget";
 import { WidgetShell } from "@/components/widget-shell";
 import type { WidgetId } from "@/lib/types";
 import { useDashboardStore } from "@/store/dashboard-store";
 
-const widgetRenderers: Record<WidgetId, JSX.Element> = {
+const widgetRenderers: Partial<Record<WidgetId, JSX.Element>> = {
   weather: <WeatherMapWidget />,
-  food: <FoodRadarWidget />,
-  market: <MarketWidget />,
-  tech: <TechUtilitiesWidget />
+  food: <FoodRadarWidget />
 };
 
 export function DashboardGrid() {
@@ -30,7 +26,7 @@ export function DashboardGrid() {
 
       <div className="grid gap-5 xl:grid-cols-2">
         {orderedWidgets.map((widget) =>
-          widget.enabled ? (
+          widget.enabled && widgetRenderers[widget.id] ? (
             <WidgetShell
               key={widget.id}
               id={widget.id}
