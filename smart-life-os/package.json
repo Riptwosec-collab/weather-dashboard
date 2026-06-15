@@ -1,6 +1,6 @@
 {
   "name": "smart-life-os",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,7 +13,8 @@
     "smart:build": "next build",
     "smart:start": "next start",
     "smart:lint": "next lint",
-    "smart:typecheck": "tsc --noEmit"
+    "smart:typecheck": "tsc --noEmit",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@upstash/redis": "^1.35.1",
