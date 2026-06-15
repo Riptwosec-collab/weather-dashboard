@@ -4,13 +4,21 @@ import type { WidgetId } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
+const defaultWidgets: WidgetId[] = ["weather", "food", "market", "tech"];
+const widgetIds = new Set<WidgetId>(defaultWidgets);
+
 type BriefingRequest = {
-  activeWidgets?: WidgetId[];
+  activeWidgets?: string[];
 };
 
 type ClaudeResponse = {
   content?: Array<{ type: string; text?: string }>;
 };
+
+function normalizeWidgets(input?: string[]): WidgetId[] {
+  const validWidgets = input?.filter((item): item is WidgetId => widgetIds.has(item as WidgetId)) ?? [];
+  return validWidgets.length ? validWidgets : defaultWidgets;
+}
 
 function fallbackLines(activeWidgets: WidgetId[]): string[] {
   const hasWeather = activeWidgets.includes("weather");
@@ -58,7 +66,7 @@ async function callClaude(activeWidgets: WidgetId[]): Promise<string[] | null> {
 
 export async function POST(request: Request) {
   const body = (await request.json().catch(() => ({}))) as BriefingRequest;
-  const activeWidgets = body.activeWidgets?.length ? body.activeWidgets : ["weather", "food", "market", "tech"];
+  const activeWidgets = normalizeWidgets(body.activeWidgets);
   const cacheKey = `briefing:${activeWidgets.join("-")}`;
 
   const payload = await cachedJson<{ lines: string[] }>(cacheKey, cacheTtl.briefing, async () => {
