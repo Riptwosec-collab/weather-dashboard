@@ -27,11 +27,13 @@ export function WeatherMapWidget() {
 
   useEffect(() => {
     if (!mapRef.current) return;
-    let cleanup = () => undefined;
+
+    let disposed = false;
+    let cleanup: (() => void) | undefined;
 
     async function initMap() {
       const maplibregl = (await import("maplibre-gl")).default;
-      if (!mapRef.current) return;
+      if (!mapRef.current || disposed) return;
 
       const map = new maplibregl.Map({
         container: mapRef.current,
@@ -42,11 +44,17 @@ export function WeatherMapWidget() {
       });
 
       new maplibregl.Marker({ color: "#38bdf8" }).setLngLat([100.5018, 13.7563]).addTo(map);
-      cleanup = () => map.remove();
+      cleanup = () => {
+        map.remove();
+      };
     }
 
     void initMap();
-    return () => cleanup();
+
+    return () => {
+      disposed = true;
+      cleanup?.();
+    };
   }, []);
 
   const current = weather?.current;
