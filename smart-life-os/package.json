@@ -8,7 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "smart:dev": "next dev",
+    "smart:build": "next build",
+    "smart:start": "next start",
+    "smart:lint": "next lint",
+    "smart:typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@upstash/redis": "^1.35.1",
