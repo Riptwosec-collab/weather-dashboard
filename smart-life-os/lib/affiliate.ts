@@ -1,45 +1,6 @@
-import type { AffiliateCard, WidgetId } from "@/lib/types";
+const fallbackAffiliateBuyLink =
+  "https://shopee.co.th/search?keyword=%E0%B9%80%E0%B8%AA%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%9D%E0%B8%99%20%E0%B8%9E%E0%B8%81%E0%B8%9E%E0%B8%B2";
 
-const affiliateCatalog: Record<WidgetId, AffiliateCard[]> = {
-  weather: [
-    {
-      id: "weather-raincoat",
-      widgetId: "weather",
-      title: "เสื้อกันฝนพกพา",
-      description: "เหมาะกับขับรถ/ออกทริปช่วงฝนตก ไม่กินพื้นที่กระเป๋า",
-      label: "Road trip",
-      cta: "ดูไอเทมกันฝน",
-      href: "https://shopee.co.th/search?keyword=%E0%B9%80%E0%B8%AA%E0%B8%B7%E0%B9%89%E0%B8%AD%E0%B8%81%E0%B8%B1%E0%B8%99%E0%B9%9D%E0%B8%99%20%E0%B8%9E%E0%B8%81%E0%B8%9E%E0%B8%B2"
-    },
-    {
-      id: "weather-powerbank",
-      widgetId: "weather",
-      title: "Power bank สำหรับเดินทาง",
-      description: "สำรองแบตมือถือเวลาต้องใช้แผนที่/เรดาร์ฝนระหว่างทริป",
-      label: "Travel gear",
-      cta: "ดู power bank",
-      href: "https://shopee.co.th/search?keyword=power%20bank%20travel"
-    }
-  ],
-  food: [
-    {
-      id: "food-card-promo",
-      widgetId: "food",
-      title: "บัตรเครดิตสายกิน",
-      description: "ใช้เทียบโปรร้านบุฟเฟต์/ชาบู/ยากินิกุ ก่อนออกไปกินจริง",
-      label: "Food promo",
-      cta: "ดูโปรร้านอาหาร",
-      href: "https://www.lazada.co.th/tag/restaurant-promotion/"
-    }
-  ],
-  market: [],
-  tech: []
-};
-
-export function getAffiliateCards(widgetId: WidgetId): AffiliateCard[] {
-  return affiliateCatalog[widgetId] ?? [];
-}
-
-export function getAllAffiliateCards(): AffiliateCard[] {
-  return Object.values(affiliateCatalog).flat();
+export function getAffiliateBuyLink() {
+  return process.env.NEXT_PUBLIC_AFFILIATE_BUY_LINK ?? fallbackAffiliateBuyLink;
 }

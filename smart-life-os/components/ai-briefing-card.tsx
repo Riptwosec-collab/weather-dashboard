@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { Sparkles } from "lucide-react";
 import type { WidgetId } from "@/lib/types";
 
 type AiBriefingCardProps = {
@@ -50,19 +51,22 @@ export function AiBriefingCard({ activeWidgetIds }: AiBriefingCardProps) {
   }, [body]);
 
   return (
-    <section className="glass-panel rounded-[1.75rem] p-5">
+    <section className="glass-panel rounded-lg p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">AI Daily Briefing</p>
+          <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase text-emerald-200">
+            <Sparkles size={14} />
+            AI Daily Briefing
+          </p>
           <h2 className="mt-1 text-xl font-bold text-white">สรุปเช้าวันนี้</h2>
         </div>
-        <span className="rounded-full border border-slate-700 px-3 py-1 text-xs text-slate-300">
+        <span className={`rounded-md border px-3 py-1 text-xs font-semibold ${loading ? "border-amber-300/30 bg-amber-300/10 text-amber-100" : "border-emerald-300/30 bg-emerald-300/10 text-emerald-100"}`}>
           {loading ? "syncing" : "ready"}
         </span>
       </div>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {briefing.map((line) => (
-          <p key={line} className="rounded-2xl border border-slate-700/70 bg-slate-950/50 p-4 text-sm leading-6 text-slate-100">
+          <p key={line} className="metric-card rounded-lg p-4 text-sm leading-6 text-slate-100">
             {line}
           </p>
         ))}

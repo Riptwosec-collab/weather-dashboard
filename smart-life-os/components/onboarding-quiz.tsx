@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, LayoutDashboard } from "lucide-react";
 import type { LifestyleRole } from "@/lib/types";
 import { useDashboardStore } from "@/store/dashboard-store";
 
@@ -19,9 +20,12 @@ export function OnboardingQuiz() {
   const [budgetFocus, setBudgetFocus] = useState<"saving" | "balanced" | "premium">("balanced");
 
   return (
-    <section className="glass-panel rounded-[2rem] p-5 sm:p-7">
+    <section className="glass-panel rounded-lg p-5 sm:p-6">
       <div className="mb-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-cyan-200">Onboarding Quiz</p>
+        <p className="inline-flex items-center gap-2 text-xs font-semibold uppercase text-cyan-100">
+          <LayoutDashboard size={14} />
+          Onboarding Quiz
+        </p>
         <h2 className="mt-2 text-2xl font-bold text-white">จัดหน้า Dashboard ให้เข้ากับไลฟ์สไตล์</h2>
         <p className="mt-2 text-sm text-slate-300">ตอบสั้น ๆ แล้วระบบจะเรียง widget ให้เหมาะกับคุณ</p>
       </div>
@@ -32,11 +36,14 @@ export function OnboardingQuiz() {
             key={item.id}
             type="button"
             onClick={() => setRole(item.id)}
-            className={`rounded-2xl border p-4 text-left transition ${
-              role === item.id ? "border-cyan-300 bg-cyan-300/10" : "border-slate-700 bg-slate-950/40 hover:border-slate-500"
+            className={`rounded-lg border p-4 text-left transition ${
+              role === item.id ? "border-cyan-300 bg-cyan-300/12 shadow-[inset_0_0_0_1px_rgba(103,232,249,0.24)]" : "border-slate-700 bg-slate-950/40 hover:border-slate-500"
             }`}
           >
-            <p className="font-semibold text-white">{item.label}</p>
+            <p className="flex items-center justify-between gap-2 font-semibold text-white">
+              {item.label}
+              {role === item.id ? <Check size={16} className="text-cyan-200" /> : null}
+            </p>
             <p className="mt-2 text-xs leading-5 text-slate-400">{item.detail}</p>
           </button>
         ))}
@@ -46,7 +53,7 @@ export function OnboardingQuiz() {
         <label className="block">
           <span className="text-sm font-medium text-slate-200">จังหวัดหลัก</span>
           <input
-            className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-white outline-none focus:border-cyan-300"
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300"
             value={province}
             onChange={(event) => setProvince(event.target.value)}
           />
@@ -54,7 +61,7 @@ export function OnboardingQuiz() {
         <label className="block">
           <span className="text-sm font-medium text-slate-200">สไตล์แนะนำร้าน</span>
           <select
-            className="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950/70 px-4 py-3 text-white outline-none focus:border-cyan-300"
+            className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950/70 px-4 py-3 text-white outline-none transition focus:border-cyan-300"
             value={budgetFocus}
             onChange={(event) => setBudgetFocus(event.target.value as "saving" | "balanced" | "premium")}
           >
@@ -66,7 +73,7 @@ export function OnboardingQuiz() {
       </div>
 
       <button
-        className="mt-6 w-full rounded-2xl bg-cyan-300 px-5 py-4 font-bold text-slate-950 transition hover:bg-cyan-200 sm:w-auto"
+        className="sharp-button mt-6 w-full px-5 py-4 font-bold transition sm:w-auto"
         type="button"
         onClick={() => completeOnboarding({ role, province, budgetFocus, goals: [role] })}
       >

@@ -1,4 +1,6 @@
 /// <reference types="next" />
 /// <reference types="next/image-types/global" />
+import "./.next/types/routes.d.ts";
 
-// This file is automatically maintained by Next.js. It is included here so typecheck can run before first dev boot.
+// NOTE: This file should not be edited
+// see https://nextjs.org/docs/app/api-reference/config/typescript for more information.

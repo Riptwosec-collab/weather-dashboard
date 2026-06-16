@@ -5,12 +5,15 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import path from 'path';
 
 export default defineConfig(({ mode }) => ({
+  base: '/weather-dashboard/',
   plugins: [
     react(),
 
     // PWA with Workbox offline caching
-    VitePWA({
+    !process.env.DISABLE_PWA &&
+      VitePWA({
       registerType: 'autoUpdate',
+      scope: '/weather-dashboard/',
       includeAssets: ['favicon.svg', 'icons/*.png', 'og-image.png'],
       manifest: false,
       workbox: {
@@ -47,7 +50,7 @@ export default defineConfig(({ mode }) => ({
           },
         ],
       },
-    }),
+      }),
 
     // Bundle visualizer — only in 'analyze' mode (npm run analyze)
     mode === 'analyze' &&

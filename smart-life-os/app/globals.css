@@ -20,11 +20,13 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(14, 165, 233, 0.22), transparent 32rem),
-    radial-gradient(circle at 85% 10%, rgba(168, 85, 247, 0.15), transparent 30rem),
-    linear-gradient(135deg, #020617 0%, #07111f 48%, #0f172a 100%);
-  color: #e2e8f0;
+    linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+    linear-gradient(135deg, #05070c 0%, #101621 46%, #18130f 100%);
+  background-size: 28px 28px, 28px 28px, auto;
+  color: #edf2f7;
   font-family: var(--font-sans);
+  letter-spacing: 0;
 }
 
 button,
@@ -40,14 +42,49 @@ textarea {
 }
 
 .glass-panel {
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: rgba(15, 23, 42, 0.72);
-  box-shadow: 0 24px 80px rgba(15, 23, 42, 0.32);
-  backdrop-filter: blur(18px);
+  border: 1px solid rgba(226, 232, 240, 0.16);
+  background: rgba(7, 11, 18, 0.88);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(14px);
 }
 
 .widget-card {
-  border: 1px solid rgba(148, 163, 184, 0.18);
-  background: linear-gradient(145deg, rgba(15, 23, 42, 0.86), rgba(15, 23, 42, 0.62));
-  box-shadow: 0 20px 70px rgba(2, 6, 23, 0.32);
+  border: 1px solid rgba(226, 232, 240, 0.14);
+  background: rgba(9, 14, 22, 0.92);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+}
+
+.ui-panel {
+  border: 1px solid rgba(226, 232, 240, 0.12);
+  background: rgba(14, 19, 29, 0.84);
+}
+
+.metric-card {
+  border: 1px solid rgba(226, 232, 240, 0.12);
+  background: #0b111b;
+}
+
+.sharp-button {
+  border-radius: 8px;
+  border: 1px solid rgba(125, 211, 252, 0.42);
+  background: #0e7490;
+  color: #f8fafc;
+  box-shadow: 0 8px 22px rgba(14, 116, 144, 0.24);
+}
+
+.sharp-button:hover {
+  border-color: rgba(165, 243, 252, 0.82);
+  background: #0891b2;
+}
+
+.ghost-button {
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.14);
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+}
+
+.ghost-button:hover {
+  border-color: rgba(125, 211, 252, 0.55);
+  color: #ecfeff;
 }

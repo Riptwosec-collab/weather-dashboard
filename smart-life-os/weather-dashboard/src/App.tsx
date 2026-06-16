@@ -47,9 +47,7 @@ function OnboardingToast() {
   const { showOnboarding, dismissOnboarding } = useWeatherStore();
   if (!showOnboarding) return null;
   return (
-    <div className="absolute bottom-48 left-1/2 -translate-x-1/2 z-30 pointer-events-auto
-                    bg-neutral-900/95 border border-white/10 rounded-xl p-3 shadow-2xl
-                    max-w-[280px] backdrop-blur-sm">
+    <div className="wd-panel absolute bottom-48 left-1/2 z-30 max-w-[280px] -translate-x-1/2 rounded-lg p-3 pointer-events-auto">
       <div className="text-[11px] text-white font-semibold mb-1">Welcome to Weather Dashboard</div>
       <ul className="text-[9px] text-neutral-400 space-y-0.5 mb-2">
         <li>🖱 <strong>Click map</strong> to select any location</li>
@@ -75,9 +73,7 @@ function OnboardingToast() {
 // ── Keyboard shortcut hint badge ──────────────────────────────
 function ShortcutHint() {
   return (
-    <div className="absolute top-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none
-                    bg-black/60 border border-white/10 rounded px-2 py-1
-                    text-[8px] text-neutral-500 font-mono hidden md:flex items-center gap-2">
+    <div className="wd-control absolute top-3 left-1/2 z-10 hidden -translate-x-1/2 items-center gap-2 rounded px-2 py-1 font-mono text-[8px] text-neutral-400 pointer-events-none md:flex">
       <Keyboard size={8} />
       <kbd>/</kbd> search · <kbd>L</kbd> layers · <kbd>T</kbd> timeline · <kbd>U</kbd> unit · <kbd>S</kbd> share
     </div>
@@ -131,8 +127,7 @@ export default function App() {
       {/* ── DESKTOP ── */}
       <div className="hidden md:flex absolute inset-0 z-10 pointer-events-none p-4 gap-4 flex-col">
         <div className="flex flex-1 gap-4 min-h-0">
-          <aside className={`${layersCollapsed ? 'w-14' : 'w-56'} bg-neutral-900/65 backdrop-blur-md border border-white/10
-                            rounded-xl flex flex-col shadow-2xl pointer-events-auto overflow-hidden transition-all duration-300`}>
+          <aside className={`${layersCollapsed ? 'w-14' : 'w-56'} wd-panel flex flex-col rounded-lg pointer-events-auto overflow-hidden transition-all duration-300`}>
             <PanelHeader
               icon={Layers}
               label={layersCollapsed ? '' : 'Data Layers'}
@@ -140,8 +135,7 @@ export default function App() {
                 <button
                   onClick={() => setLayersCollapsed((v) => !v)}
                   title={layersCollapsed ? 'Expand layers' : 'Collapse layers'}
-                  className="w-6 h-6 flex items-center justify-center rounded bg-black/40 border border-white/10
-                             text-neutral-400 hover:text-white hover:border-white/20 transition-colors"
+                  className="wd-control flex h-6 w-6 items-center justify-center rounded text-neutral-300 transition-colors hover:border-cyan-300/50 hover:text-white"
                 >
                   {layersCollapsed ? <ChevronRight size={13} /> : <ChevronLeft size={13} />}
                 </button>
@@ -150,8 +144,7 @@ export default function App() {
             <ErrorBoundary><LayerControls compact={layersCollapsed} /></ErrorBoundary>
           </aside>
 
-          <aside className="w-80 bg-neutral-900/65 backdrop-blur-md border border-white/10
-                            rounded-xl flex flex-col shadow-2xl pointer-events-auto overflow-hidden">
+          <aside className="wd-panel flex w-80 flex-col rounded-lg pointer-events-auto overflow-hidden">
             <PanelHeader icon={Eye} label="Location Analysis" badge={<LiveBadge />} />
             <ErrorBoundary>
               <Suspense fallback={<PanelSkeleton />}>
@@ -161,8 +154,7 @@ export default function App() {
           </aside>
         </div>
 
-        <div className="h-40 bg-neutral-900/65 backdrop-blur-md border border-white/10
-                        rounded-xl flex flex-col shadow-2xl pointer-events-auto shrink-0 overflow-hidden">
+        <div className="wd-panel flex h-40 shrink-0 flex-col rounded-lg pointer-events-auto overflow-hidden">
           <PanelHeader icon={Clock} label="Timeline Forecast" badge={<LiveBadge />} />
           <ErrorBoundary>
             <Suspense fallback={<PanelSkeleton />}>
@@ -174,8 +166,7 @@ export default function App() {
 
       {/* ── MOBILE ── */}
       <div className="flex md:hidden absolute inset-0 z-10 pointer-events-none flex-col justify-end">
-        <div className="h-[58vh] bg-neutral-950/92 backdrop-blur-md border-t border-white/10
-                        flex flex-col pointer-events-auto overflow-hidden">
+        <div className="wd-panel flex h-[58vh] flex-col overflow-hidden border-x-0 border-b-0 pointer-events-auto">
           {mobilePanel === 'layers' && (
             <><PanelHeader icon={Layers} label="Data Layers" />
               <ErrorBoundary><LayerControls /></ErrorBoundary></>

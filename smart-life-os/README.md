@@ -1,6 +1,6 @@
 # Smart Life OS
 
-Modular personal dashboard web app for Thai users. This app is added beside the existing Weather Dashboard, so the original app stays untouched.
+Modular personal dashboard web app for Thai users. The Weather Dashboard now lives inside this project and is published under `/weather-dashboard`.
 
 ## Stack
 
@@ -41,7 +41,7 @@ Open `http://localhost:3000`.
 - Food Radar widget
 - Market & Wealth tracker with average cost calculator
 - Tech utilities: MAC converter, DHCP pool checker, WHOIS route, cert flashcards
-- Contextual affiliate card zones per widget
+- Single affiliate purchase link via `NEXT_PUBLIC_AFFILIATE_BUY_LINK`
 
 ## API route rule
 

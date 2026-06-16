@@ -3,18 +3,29 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "22.x"
+  },
   "workspaces": [
-    "weather-dashboard/wdash",
     "smart-life-os"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace weather-dashboard",
-    "build": "npm run build --workspace weather-dashboard",
-    "preview": "npm run preview --workspace weather-dashboard",
+    "dev": "npm run smart:dev",
+    "build": "npm run build:weather && node scripts/copy-weather-dashboard.mjs && npm run smart:build",
+    "build:weather": "node scripts/build-weather-dashboard.mjs",
+    "preview": "npm run smart:start",
+    "weather:dev": "npm run dev --prefix smart-life-os/weather-dashboard",
+    "weather:build": "npm run build --prefix smart-life-os/weather-dashboard",
+    "weather:preview": "npm run preview --prefix smart-life-os/weather-dashboard",
     "smart:dev": "npm run dev --workspace smart-life-os",
     "smart:build": "npm run build --workspace smart-life-os",
     "smart:start": "npm run start --workspace smart-life-os",
     "smart:lint": "npm run lint --workspace smart-life-os",
     "smart:typecheck": "npm run typecheck --workspace smart-life-os"
+  },
+  "devDependencies": {
+    "fdir": "^6.5.0",
+    "picomatch": "^4.0.4",
+    "postcss-selector-parser": "^6.1.4"
   }
 }

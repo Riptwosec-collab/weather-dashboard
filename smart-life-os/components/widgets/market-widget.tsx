@@ -35,7 +35,7 @@ export function MarketWidget() {
     <div className="grid gap-4">
       <div className="grid gap-3 sm:grid-cols-2">
         {assets.map((asset) => (
-          <div key={asset.symbol} className="rounded-2xl border border-slate-700/70 bg-slate-950/50 p-4">
+          <div key={asset.symbol} className="metric-card rounded-lg p-4">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <p className="font-semibold text-white">{asset.symbol}</p>
@@ -52,14 +52,14 @@ export function MarketWidget() {
         ))}
       </div>
 
-      <div className="rounded-2xl border border-slate-700/70 bg-slate-950/50 p-4">
+      <div className="metric-card rounded-lg p-4">
         <div className="flex items-center justify-between">
           <div>
             <p className="font-semibold text-white">Average Cost Calculator</p>
             <p className="text-xs text-slate-400">คำนวณต้นทุนเฉลี่ยจากหลายไม้</p>
           </div>
           <button
-            className="rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-300"
+            className="ghost-button px-3 py-2 text-xs font-semibold transition"
             type="button"
             onClick={() => setLots((items) => [...items, { id: crypto.randomUUID(), units: 1, price: 100 }])}
           >
@@ -70,14 +70,14 @@ export function MarketWidget() {
           {lots.map((lot) => (
             <div key={lot.id} className="grid grid-cols-2 gap-2">
               <input
-                className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-300"
                 min={0}
                 type="number"
                 value={lot.units}
                 onChange={(event) => setLots((items) => items.map((item) => item.id === lot.id ? { ...item, units: Number(event.target.value) } : item))}
               />
               <input
-                className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+                className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-300"
                 min={0}
                 type="number"
                 value={lot.price}
@@ -86,7 +86,7 @@ export function MarketWidget() {
             </div>
           ))}
         </div>
-        <p className="mt-4 rounded-2xl bg-cyan-300/10 p-3 text-sm font-bold text-cyan-100">
+        <p className="mt-4 rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-3 text-sm font-bold text-cyan-100">
           Average cost: {averageCost.toFixed(2)} ต่อหน่วย
         </p>
       </div>

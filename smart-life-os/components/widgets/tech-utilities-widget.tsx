@@ -45,15 +45,15 @@ export function TechUtilitiesWidget() {
 
   return (
     <div className="grid gap-4">
-      <div className="rounded-2xl border border-slate-700/70 bg-slate-950/50 p-4">
+      <div className="metric-card rounded-lg p-4">
         <p className="font-semibold text-white">MAC Address Converter</p>
         <div className="mt-3 flex gap-2">
           <input
-            className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-300"
             value={mac}
             onChange={(event) => setMac(event.target.value)}
           />
-          <button className="rounded-xl bg-cyan-300 px-3 py-2 text-sm font-bold text-slate-950" onClick={convertMac} type="button">
+          <button className="sharp-button px-3 py-2 text-sm font-bold transition" onClick={convertMac} type="button">
             แปลง
           </button>
         </div>
@@ -66,27 +66,27 @@ export function TechUtilitiesWidget() {
         ) : null}
       </div>
 
-      <div className="rounded-2xl border border-slate-700/70 bg-slate-950/50 p-4">
+      <div className="metric-card rounded-lg p-4">
         <p className="font-semibold text-white">DHCP Pool Checker</p>
         <div className="mt-3 flex gap-2">
           <input
-            className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white"
+            className="min-w-0 flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white outline-none transition focus:border-cyan-300"
             value={cidr}
             onChange={(event) => setCidr(event.target.value)}
           />
-          <button className="rounded-xl bg-cyan-300 px-3 py-2 text-sm font-bold text-slate-950" onClick={checkDhcp} type="button">
+          <button className="sharp-button px-3 py-2 text-sm font-bold transition" onClick={checkDhcp} type="button">
             เช็ค
           </button>
         </div>
-        {dhcpResult ? <p className="mt-3 rounded-xl bg-slate-900 p-3 text-xs text-slate-200">{dhcpResult}</p> : null}
+        {dhcpResult ? <p className="mt-3 rounded-lg border border-slate-700 bg-slate-900 p-3 text-xs text-slate-200">{dhcpResult}</p> : null}
       </div>
 
-      <div className="rounded-2xl border border-slate-700/70 bg-slate-950/50 p-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-cyan-200">Flashcard</p>
+      <div className="metric-card rounded-lg p-4">
+        <p className="text-xs font-semibold uppercase text-amber-200">Flashcard</p>
         <p className="mt-2 text-lg font-bold text-white">{card.q}</p>
         <p className="mt-2 text-sm text-slate-300">{card.a}</p>
         <button
-          className="mt-3 rounded-xl border border-slate-700 px-3 py-2 text-xs text-slate-300"
+          className="ghost-button mt-3 px-3 py-2 text-xs font-semibold transition"
           type="button"
           onClick={() => setCardIndex((index) => (index + 1) % flashcards.length)}
         >

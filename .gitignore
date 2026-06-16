@@ -1,0 +1,10 @@
+node_modules/
+.next/
+dist/
+
+smart-life-os/.next/
+smart-life-os/public/weather-dashboard/
+smart-life-os/weather-dashboard/node_modules/
+smart-life-os/weather-dashboard/dist/
+
+*.log

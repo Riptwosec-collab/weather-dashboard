@@ -9,8 +9,8 @@ export function SmartLifeOS() {
   const done = useDashboardStore((state) => state.onboardingCompleted);
 
   return (
-    <main className="min-h-screen px-4 py-5 sm:px-6 lg:px-8">
-      <section className="mx-auto flex max-w-7xl flex-col gap-6">
+    <main className="min-h-screen px-4 py-4 sm:px-6 lg:px-8">
+      <section className="mx-auto flex max-w-7xl flex-col gap-4">
         <AppHeader />
         {done ? <DashboardGrid /> : <OnboardingQuiz />}
       </section>

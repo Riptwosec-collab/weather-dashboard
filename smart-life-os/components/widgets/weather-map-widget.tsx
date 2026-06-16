@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { CloudRain, Thermometer, Wind } from "lucide-react";
 import type { WeatherSnapshot } from "@/lib/types";
 
 const layerLabels = ["Rain radar", "Wind", "PM2.5"];
@@ -61,18 +62,18 @@ export function WeatherMapWidget() {
 
   return (
     <div className="grid gap-4">
-      <div className="h-64 overflow-hidden rounded-3xl border border-slate-700 bg-slate-950" ref={mapRef} />
+      <div className="h-64 overflow-hidden rounded-lg border border-slate-700 bg-slate-950 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)]" ref={mapRef} />
       <div className="grid grid-cols-3 gap-2 text-center text-xs">
-        <div className="rounded-2xl bg-slate-950/70 p-3">
-          <p className="text-slate-400">Temp</p>
+        <div className="metric-card rounded-lg p-3">
+          <p className="flex items-center justify-center gap-1 text-slate-400"><Thermometer size={13} />Temp</p>
           <p className="mt-1 text-lg font-bold text-white">{current ? `${current.temperature}°C` : "--"}</p>
         </div>
-        <div className="rounded-2xl bg-slate-950/70 p-3">
-          <p className="text-slate-400">Rain</p>
+        <div className="metric-card rounded-lg p-3">
+          <p className="flex items-center justify-center gap-1 text-slate-400"><CloudRain size={13} />Rain</p>
           <p className="mt-1 text-lg font-bold text-white">{current ? `${current.rain} mm` : "--"}</p>
         </div>
-        <div className="rounded-2xl bg-slate-950/70 p-3">
-          <p className="text-slate-400">PM2.5</p>
+        <div className="metric-card rounded-lg p-3">
+          <p className="flex items-center justify-center gap-1 text-slate-400"><Wind size={13} />PM2.5</p>
           <p className="mt-1 text-lg font-bold text-white">{current ? current.pm25 : "--"}</p>
         </div>
       </div>
@@ -84,8 +85,8 @@ export function WeatherMapWidget() {
               key={layer}
               type="button"
               onClick={() => setActiveLayers((layers) => (enabled ? layers.filter((item) => item !== layer) : [...layers, layer]))}
-              className={`rounded-full border px-3 py-2 text-xs font-semibold ${
-                enabled ? "border-cyan-300 bg-cyan-300/10 text-cyan-100" : "border-slate-700 text-slate-400"
+              className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
+                enabled ? "border-cyan-300 bg-cyan-300/10 text-cyan-100" : "border-slate-700 bg-slate-950/40 text-slate-400 hover:border-slate-500"
               }`}
             >
               {layer}
@@ -94,7 +95,7 @@ export function WeatherMapWidget() {
         })}
       </div>
       {weather?.alerts.map((alert) => (
-        <p key={alert} className="rounded-2xl border border-amber-300/20 bg-amber-300/10 p-3 text-xs leading-5 text-amber-100">
+        <p key={alert} className="rounded-lg border border-amber-300/25 bg-amber-300/10 p-3 text-xs leading-5 text-amber-100">
           {alert}
         </p>
       ))}
