@@ -152,6 +152,7 @@ export default function LayerControls({ compact = false }: { compact?: boolean }
             <div className="flex items-center gap-1 text-[9px] text-neutral-500 shrink-0">
               <Palette size={10} />
               <span>Theme</span>
+              <span className="rounded border border-white/10 px-1 py-0.5 font-mono text-[7px] text-[color:var(--accent)]">v2.1</span>
             </div>
           </div>
           <div className="grid grid-cols-4 gap-1">
