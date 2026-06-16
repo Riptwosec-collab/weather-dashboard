@@ -1,6 +1,6 @@
 import { spawn } from "node:child_process";
 
-const child = spawn("npm install --prefix weather-dashboard --legacy-peer-deps --ignore-scripts && npm run build --prefix weather-dashboard", {
+const child = spawn("npm install --prefix weather-dashboard --include=dev --legacy-peer-deps --ignore-scripts && npm run build --prefix weather-dashboard", {
   env: {
     ...process.env,
     DISABLE_PWA: "1"
