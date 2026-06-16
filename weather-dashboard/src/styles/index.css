@@ -142,6 +142,48 @@ body {
   box-shadow: 0 0 0 1px var(--accent), 0 0 24px rgba(56, 189, 248, 0.18);
 }
 
+.premium-input {
+  border: 1px solid var(--panel-border);
+  background: var(--input-bg);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.premium-menu {
+  border: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+.premium-chip {
+  border: 1px solid var(--panel-border);
+  background: var(--surface);
+  color: var(--text-soft);
+}
+
+.premium-chip-active {
+  border-color: var(--accent);
+  color: var(--text-strong);
+  background: var(--chart-fill);
+}
+
+.mobile-nav-shell {
+  border-top: 1px solid var(--panel-border);
+  background: var(--panel-bg);
+  box-shadow: 0 -12px 32px rgba(0, 0, 0, 0.30);
+  backdrop-filter: blur(18px) saturate(130%);
+}
+
+.timeline-table {
+  border: 1px solid var(--panel-border);
+  background: var(--surface);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.timeline-sticky {
+  background: var(--panel-bg);
+}
+
 .map-vignette {
   pointer-events: none;
   position: absolute;

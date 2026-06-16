@@ -20,19 +20,19 @@ function CompareSearch({ onSelect }: { onSelect: (loc: CompareLocation) => void 
 
   return (
     <div className="relative">
-      <div className="flex items-center gap-1.5 bg-black/50 border border-white/10 rounded px-2 py-1.5">
+      <div className="premium-input flex items-center gap-1.5 rounded px-2 py-1.5">
         <Plus size={10} className="text-neutral-500 shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Add city to compare…"
+          placeholder="Add city to compare..."
           className="flex-1 bg-transparent text-[10px] text-neutral-200 placeholder-neutral-600 outline-none"
         />
-        {isLoading && <div className="w-2 h-2 border border-blue-400 border-t-transparent rounded-full animate-spin" />}
+        {isLoading && <div className="w-2 h-2 border border-[color:var(--accent)] border-t-transparent rounded-full animate-spin" />}
       </div>
       {results.length > 0 && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-neutral-900/98 border border-white/10 rounded shadow-2xl z-50 overflow-hidden">
+        <div className="premium-menu absolute top-full left-0 right-0 mt-1 rounded z-50 overflow-hidden">
           {results.slice(0, 4).map((r) => (
             <button
               key={r.id}
@@ -64,7 +64,7 @@ function CityColumn({ loc, tempUnit, onRemove, isCurrent }: {
   const rain = h?.precipitation?.[0] ?? 0;
 
   return (
-    <div className={`min-w-[148px] flex-1 flex flex-col gap-1.5 p-2 rounded-lg border ${isCurrent ? 'border-blue-500/35 bg-blue-900/10' : 'border-white/5 bg-black/25'}`}>
+    <div className={`metric-card min-w-[148px] flex-1 flex flex-col gap-1.5 p-2 ${isCurrent ? 'premium-chip-active' : ''}`}>
       <div className="flex items-start justify-between gap-1">
         <div className="min-w-0">
           <div className="text-[8px] text-neutral-500 uppercase tracking-wider flex items-center gap-1">
@@ -75,7 +75,7 @@ function CityColumn({ loc, tempUnit, onRemove, isCurrent }: {
         {!isCurrent && onRemove && <button onClick={onRemove} className="shrink-0 text-neutral-600 hover:text-white"><X size={10} /></button>}
       </div>
 
-      <div className="text-[9px] text-neutral-400 truncate">{wCode != null ? wmoLabel(wCode) : 'Loading weather…'}</div>
+      <div className="text-[9px] text-neutral-400 truncate">{wCode != null ? wmoLabel(wCode) : 'Loading weather...'}</div>
 
       <div className="flex items-end gap-1">
         <Thermometer size={10} className="text-red-400 shrink-0 mb-0.5" />
@@ -83,7 +83,7 @@ function CityColumn({ loc, tempUnit, onRemove, isCurrent }: {
       </div>
 
       <div className="grid grid-cols-2 gap-1 text-[9px]">
-        <div className={`${rain > 0 ? 'text-blue-300' : 'text-neutral-600'} flex items-center gap-1`}><CloudRain size={9} />{h?.precipitation?.[0]?.toFixed(1) ?? '--'} mm</div>
+        <div className={`${rain > 0 ? 'text-[color:var(--chart-rain)]' : 'text-neutral-600'} flex items-center gap-1`}><CloudRain size={9} />{h?.precipitation?.[0]?.toFixed(1) ?? '--'} mm</div>
         <div className="flex items-center gap-1 text-teal-400"><Wind size={9} />{h?.windspeed_10m?.[0]?.toFixed(0) ?? '--'} km/h</div>
         <div className="flex items-center gap-1 text-cyan-400"><Droplets size={9} />{h?.relative_humidity_2m?.[0] ?? '--'}%</div>
         <div className="flex items-center gap-1 text-yellow-400"><Sun size={9} />UV {h?.uv_index?.[0]?.toFixed(0) ?? '--'}</div>
@@ -96,14 +96,14 @@ function CityColumn({ loc, tempUnit, onRemove, isCurrent }: {
               <span className="text-neutral-600 w-7 shrink-0">{new Date(date).toLocaleDateString([], { weekday: 'short' })}</span>
               <span className="text-red-400 font-mono">{formatTemp(d.temperature_2m_max[i], tempUnit)}</span>
               <span className="text-neutral-600">/</span>
-              <span className="text-blue-400 font-mono">{formatTemp(d.temperature_2m_min[i], tempUnit)}</span>
-              {(d.precipitation_sum[i] ?? 0) > 0 && <span className="text-blue-500 ml-auto">{d.precipitation_sum[i].toFixed(0)}mm</span>}
+              <span className="text-cyan-300 font-mono">{formatTemp(d.temperature_2m_min[i], tempUnit)}</span>
+              {(d.precipitation_sum[i] ?? 0) > 0 && <span className="text-[color:var(--chart-rain)] ml-auto">{d.precipitation_sum[i].toFixed(0)}mm</span>}
             </div>
           ))}
         </div>
       )}
 
-      {!h && <div className="text-[9px] text-neutral-600 animate-pulse">Loading…</div>}
+      {!h && <div className="text-[9px] text-neutral-600 animate-pulse">Loading...</div>}
     </div>
   );
 }
@@ -129,7 +129,6 @@ export default function ComparePanel() {
   };
 
   const canAdd = compareLocations.length < 3;
-
   const addLoc = (loc: CompareLocation) => {
     addCompareLocation(loc);
     fetchCompareWeather(loc.id, loc.lat, loc.lng);
@@ -140,7 +139,7 @@ export default function ComparePanel() {
       <button onClick={() => setOpen((v) => !v)} className="flex items-center gap-1.5 text-[9px] text-neutral-500 hover:text-neutral-300 transition-colors">
         <GitCompare size={10} />
         <span className="uppercase tracking-wider">Compare locations</span>
-        <span className="ml-auto">{open ? '▲' : '▼'}</span>
+        <span className="ml-auto">{open ? '^' : 'v'}</span>
       </button>
 
       {open && (
@@ -151,7 +150,7 @@ export default function ComparePanel() {
                 key={city.name}
                 onClick={() => addLoc(toCompareLocation(city.name, city.lat, city.lng))}
                 disabled={!canAdd}
-                className="px-2 py-1 rounded border border-white/10 bg-black/30 text-[9px] text-neutral-400 hover:text-white disabled:opacity-40"
+                className="premium-chip px-2 py-1 rounded text-[9px] hover:text-white disabled:opacity-40"
               >
                 + {city.name}
               </button>
@@ -165,7 +164,7 @@ export default function ComparePanel() {
             ))}
           </div>
 
-          {canAdd ? <CompareSearch onSelect={addLoc} /> : <div className="text-[9px] text-neutral-600 text-center">Max 3 comparison cities — remove one to add another</div>}
+          {canAdd ? <CompareSearch onSelect={addLoc} /> : <div className="text-[9px] text-neutral-600 text-center">Max 3 comparison cities. Remove one to add another.</div>}
         </div>
       )}
     </div>

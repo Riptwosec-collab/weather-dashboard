@@ -41,7 +41,7 @@ export default function AlertBanner() {
 
       {/* Threshold editor */}
       {showSettings && (
-        <div className="bg-black/50 border border-white/10 rounded p-2 flex flex-col gap-2 text-[10px]">
+        <div className="chart-panel flex flex-col gap-2 text-[10px]">
           <div className="text-[9px] text-neutral-500 uppercase tracking-wider">Alert when exceeds:</div>
 
           {/* Rain */}
@@ -51,9 +51,9 @@ export default function AlertBanner() {
               type="range" min={1} max={50} step={1}
               value={alertThresholds.rain}
               onChange={(e) => setAlertThreshold({ rain: +e.target.value })}
-              className="flex-1 accent-blue-500"
+              className="flex-1"
             />
-            <span className="font-mono text-blue-300 w-14 text-right">{alertThresholds.rain} mm/h</span>
+            <span className="font-mono text-[color:var(--chart-rain)] w-14 text-right">{alertThresholds.rain} mm/h</span>
           </div>
 
           {/* Wind */}
@@ -63,7 +63,7 @@ export default function AlertBanner() {
               type="range" min={10} max={120} step={5}
               value={alertThresholds.wind}
               onChange={(e) => setAlertThreshold({ wind: +e.target.value })}
-              className="flex-1 accent-teal-500"
+              className="flex-1"
             />
             <span className="font-mono text-teal-300 w-14 text-right">{alertThresholds.wind} km/h</span>
           </div>
@@ -75,7 +75,7 @@ export default function AlertBanner() {
               type="range" min={1} max={11} step={1}
               value={alertThresholds.uv}
               onChange={(e) => setAlertThreshold({ uv: +e.target.value })}
-              className="flex-1 accent-yellow-500"
+              className="flex-1"
             />
             <span className="font-mono text-yellow-300 w-14 text-right">≥ {alertThresholds.uv}</span>
           </div>
