@@ -156,7 +156,7 @@ export function buildOverlayLayers(
       'rainviewer-radar-src',
       [rainViewerTileUrl(rainviewerTs, 2, '1_1')],
       'rainviewer-radar-layer',
-      { 'raster-opacity': 0.84, 'raster-contrast': 0.16, 'raster-saturation': 0.34, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.68, 'raster-contrast': 0.02, 'raster-saturation': 0.12, 'raster-brightness-max': 0.92, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_RADAR_MAX_ZOOM }
     );
   }
@@ -166,7 +166,7 @@ export function buildOverlayLayers(
       'rainviewer-storm-src',
       [rainViewerTileUrl(rainviewerTs, 4, '1_1')],
       'rainviewer-storm-layer',
-      { 'raster-opacity': 0.88, 'raster-contrast': 0.26, 'raster-saturation': 0.52, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.72, 'raster-contrast': 0.08, 'raster-saturation': 0.22, 'raster-brightness-max': 0.94, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_RADAR_MAX_ZOOM }
     );
   }
@@ -176,7 +176,7 @@ export function buildOverlayLayers(
       'rainviewer-satellite-src',
       [rainViewerTileUrl(satelliteTs, 0, '0_0')],
       'rainviewer-satellite-layer',
-      { 'raster-opacity': 0.52, 'raster-contrast': 0.12, 'raster-saturation': -0.04, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.36, 'raster-contrast': -0.08, 'raster-saturation': -0.16, 'raster-brightness-max': 0.86, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_SATELLITE_MAX_ZOOM }
     );
   }
@@ -190,23 +190,23 @@ export function buildOverlayLayers(
   };
 
   if (activeLayers.includes('wind')) {
-    push('wind-src', [`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'wind-layer', { 'raster-opacity': 0.58, 'raster-hue-rotate': 200, 'raster-saturation': 0.2, 'raster-resampling': 'linear' }, owmSourceOptions);
+    push('wind-src', [`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'wind-layer', { 'raster-opacity': 0.46, 'raster-hue-rotate': 200, 'raster-saturation': 0.08, 'raster-brightness-max': 0.92, 'raster-resampling': 'linear' }, owmSourceOptions);
   }
 
   if (activeLayers.includes('temp')) {
-    push('temp-src', [`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'temp-layer', { 'raster-opacity': 0.62, 'raster-contrast': 0.08, 'raster-resampling': 'linear' }, owmSourceOptions);
+    push('temp-src', [`https://tile.openweathermap.org/map/temp_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'temp-layer', { 'raster-opacity': 0.48, 'raster-contrast': -0.02, 'raster-brightness-max': 0.90, 'raster-resampling': 'linear' }, owmSourceOptions);
   }
 
   if (activeLayers.includes('precip')) {
-    push('precip-src', [`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'precip-layer', { 'raster-opacity': 0.68, 'raster-contrast': 0.12, 'raster-saturation': 0.2, 'raster-resampling': 'linear' }, owmSourceOptions);
+    push('precip-src', [`https://tile.openweathermap.org/map/precipitation_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'precip-layer', { 'raster-opacity': 0.50, 'raster-contrast': -0.04, 'raster-saturation': 0.02, 'raster-brightness-max': 0.88, 'raster-resampling': 'linear' }, owmSourceOptions);
   }
 
   if (activeLayers.includes('clouds')) {
-    push('clouds-src', [`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'clouds-layer', { 'raster-opacity': 0.46, 'raster-contrast': 0.06, 'raster-resampling': 'linear' }, owmSourceOptions);
+    push('clouds-src', [`https://tile.openweathermap.org/map/clouds_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'clouds-layer', { 'raster-opacity': 0.30, 'raster-contrast': -0.12, 'raster-saturation': -0.18, 'raster-brightness-max': 0.78, 'raster-resampling': 'linear' }, owmSourceOptions);
   }
 
   if (activeLayers.includes('pressure')) {
-    push('pressure-src', [`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'pressure-layer', { 'raster-opacity': 0.5, 'raster-contrast': 0.08, 'raster-resampling': 'linear' }, owmSourceOptions);
+    push('pressure-src', [`https://tile.openweathermap.org/map/pressure_new/{z}/{x}/{y}.png?appid=${owmKey}`], 'pressure-layer', { 'raster-opacity': 0.42, 'raster-contrast': -0.02, 'raster-brightness-max': 0.90, 'raster-resampling': 'linear' }, owmSourceOptions);
   }
 
   return { sources, layers };

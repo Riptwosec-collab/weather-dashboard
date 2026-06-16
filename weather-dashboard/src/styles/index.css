@@ -83,6 +83,65 @@ html[data-theme="ember"] {
   --chart-fill: rgba(251, 146, 60, 0.16);
 }
 
+html[data-theme="ocean"] {
+  --page-bg: radial-gradient(circle at top left, rgba(56, 189, 248, 0.22), transparent 34%),
+    linear-gradient(135deg, #03111d 0%, #082032 45%, #071827 100%);
+  --panel-bg: rgba(5, 18, 31, 0.88);
+  --panel-border: rgba(125, 211, 252, 0.24);
+  --input-bg: rgba(7, 26, 43, 0.84);
+  --surface: rgba(8, 30, 48, 0.74);
+  --surface-2: rgba(14, 55, 82, 0.64);
+  --text-strong: #f0f9ff;
+  --text-soft: #93c5fd;
+  --accent: #0ea5e9;
+  --accent-2: #38bdf8;
+  --accent-3: #22d3ee;
+  --chart-temp: #fb7185;
+  --chart-rain: #38bdf8;
+  --chart-prob: #60a5fa;
+  --chart-grid: rgba(125, 211, 252, 0.13);
+  --chart-fill: rgba(14, 165, 233, 0.16);
+}
+
+html[data-theme="violet"] {
+  --page-bg: radial-gradient(circle at top right, rgba(168, 85, 247, 0.22), transparent 34%),
+    linear-gradient(135deg, #13091f 0%, #161028 48%, #0f172a 100%);
+  --panel-bg: rgba(25, 15, 38, 0.88);
+  --panel-border: rgba(216, 180, 254, 0.22);
+  --input-bg: rgba(34, 20, 52, 0.84);
+  --surface: rgba(39, 25, 58, 0.74);
+  --surface-2: rgba(66, 43, 91, 0.60);
+  --text-strong: #faf5ff;
+  --text-soft: #d8b4fe;
+  --accent: #a78bfa;
+  --accent-2: #f0abfc;
+  --accent-3: #facc15;
+  --chart-temp: #fb7185;
+  --chart-rain: #67e8f9;
+  --chart-prob: #c084fc;
+  --chart-grid: rgba(216, 180, 254, 0.13);
+  --chart-fill: rgba(167, 139, 250, 0.16);
+}
+
+html[data-theme="graphite"] {
+  --page-bg: linear-gradient(135deg, #050505 0%, #111113 48%, #1c1c20 100%);
+  --panel-bg: rgba(18, 18, 20, 0.90);
+  --panel-border: rgba(212, 212, 216, 0.18);
+  --input-bg: rgba(24, 24, 27, 0.86);
+  --surface: rgba(28, 28, 31, 0.78);
+  --surface-2: rgba(63, 63, 70, 0.62);
+  --text-strong: #fafafa;
+  --text-soft: #a1a1aa;
+  --accent: #e5e7eb;
+  --accent-2: #94a3b8;
+  --accent-3: #f59e0b;
+  --chart-temp: #f43f5e;
+  --chart-rain: #38bdf8;
+  --chart-prob: #a3a3a3;
+  --chart-grid: rgba(212, 212, 216, 0.12);
+  --chart-fill: rgba(228, 228, 231, 0.12);
+}
+
 html.light body { background-color: #f0f4f8; color: #1a202c; }
 
 body {
@@ -188,7 +247,10 @@ body {
   pointer-events: none;
   position: absolute;
   inset: 0;
-  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  background:
+    radial-gradient(circle at 50% 45%, transparent 0%, transparent 58%, rgba(0, 0, 0, 0.24) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.08), transparent 22%, rgba(0, 0, 0, 0.18));
+  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.42), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
 .selected-marker-dot {

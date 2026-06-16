@@ -13,6 +13,9 @@ const THEME_OPTIONS: Array<{ id: Theme; label: string; swatch: string }> = [
   { id: 'light', label: 'Light', swatch: 'bg-sky-100' },
   { id: 'aurora', label: 'Aurora', swatch: 'bg-teal-400' },
   { id: 'ember', label: 'Ember', swatch: 'bg-orange-400' },
+  { id: 'ocean', label: 'Ocean', swatch: 'bg-blue-500' },
+  { id: 'violet', label: 'Violet', swatch: 'bg-violet-500' },
+  { id: 'graphite', label: 'Graphite', swatch: 'bg-zinc-500' },
 ];
 
 type LayerStatus = {

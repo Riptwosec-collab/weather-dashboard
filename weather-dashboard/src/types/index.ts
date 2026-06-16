@@ -79,7 +79,7 @@ export interface GeocodingResult {
 
 // ── Store ────────────────────────────────────────────────────
 export type TempUnit   = 'C' | 'F';
-export type Theme      = 'dark' | 'light' | 'aurora' | 'ember';
+export type Theme      = 'dark' | 'light' | 'aurora' | 'ember' | 'ocean' | 'violet' | 'graphite';
 export type MobilePanel = 'layers' | 'analysis' | 'timeline';
 export type LayerId    =
   | 'admin'
