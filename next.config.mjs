@@ -8,6 +8,10 @@ const nextConfig = {
         {
           source: "/weather-dashboard/:path*",
           destination: "/weather-dashboard/index.html"
+        },
+        {
+          source: "/weather-dashboard-v23/:path*",
+          destination: "/weather-dashboard-v23/index.html"
         }
       ]
     };
