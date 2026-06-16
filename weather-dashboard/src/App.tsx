@@ -95,13 +95,16 @@ function ThemeDock() {
   const { theme, setTheme } = useWeatherStore();
 
   return (
-    <div className="theme-dock absolute left-1/2 top-3 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-lg px-2 py-1.5 pointer-events-auto">
-      <div className="hidden items-center gap-1.5 pr-1.5 text-[9px] font-bold uppercase tracking-wider text-[color:var(--text-soft)] sm:flex">
-        <Palette size={11} />
-        <span>Theme</span>
-        <span className="rounded border border-white/10 px-1 py-0.5 font-mono text-[7px] text-[color:var(--accent)]">v2.2</span>
+    <div className="theme-dock absolute right-4 top-4 z-40 flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-lg px-3 py-2 pointer-events-auto">
+      <div className="flex min-w-[132px] items-center gap-2 pr-2 text-[10px] font-black uppercase tracking-wider text-[color:var(--text-strong)]">
+        <Palette size={14} className="text-[color:var(--accent)]" />
+        <div className="leading-tight">
+          <div>Premium Theme</div>
+          <div className="font-mono text-[9px] text-[color:var(--accent)]">LIVE UI v2.3</div>
+        </div>
       </div>
-      <div className="flex items-center gap-1">
+      <div className="theme-dock-divider" />
+      <div className="flex items-center gap-1 overflow-x-auto">
         {THEME_OPTIONS.map((item) => (
           <button
             key={item.id}
@@ -121,6 +124,15 @@ function ThemeDock() {
 }
 
 // ── Main ──────────────────────────────────────────────────────
+function VisualRefreshBadge() {
+  return (
+    <div className="visual-refresh-badge absolute left-[252px] top-4 z-30 hidden rounded-lg px-3 py-2 pointer-events-none md:block">
+      <div className="text-[10px] font-black uppercase tracking-[0.16em] text-[color:var(--accent)]">New Premium UI v2.3</div>
+      <div className="text-[9px] text-[color:var(--text-soft)]">Theme switcher moved to top-right. Radar softened.</div>
+    </div>
+  );
+}
+
 export default function App() {
   const { fetchRainviewerTs, mobilePanel, theme, setTheme } = useWeatherStore();
   const [layersCollapsed, setLayersCollapsed] = useState(false);
@@ -137,7 +149,7 @@ export default function App() {
   useKeyboardShortcuts(focusSearch);
 
   useEffect(() => {
-    const versionKey = 'weather-dashboard-ui-v22';
+    const versionKey = 'weather-dashboard-ui-v23';
     if (localStorage.getItem(versionKey)) return;
     setTheme('ocean');
     localStorage.setItem(versionKey, '1');
@@ -169,9 +181,8 @@ export default function App() {
         </ErrorBoundary>
       </div>
 
-      {/* Shortcut hint */}
-      <ShortcutHint />
       <ThemeDock />
+      <VisualRefreshBadge />
 
       {/* ── DESKTOP ── */}
       <div className="hidden md:flex absolute inset-0 z-10 pointer-events-none p-4 gap-4 flex-col">
