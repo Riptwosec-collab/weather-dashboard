@@ -3,8 +3,8 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const source = resolve(root, "smart-life-os", "weather-dashboard", "dist");
-const target = resolve(root, "smart-life-os", "public", "weather-dashboard");
+const source = resolve(root, "weather-dashboard", "dist");
+const target = resolve(root, "public", "weather-dashboard");
 
 await rm(target, { force: true, recursive: true });
 await mkdir(target, { recursive: true });

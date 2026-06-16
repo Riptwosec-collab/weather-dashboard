@@ -1,31 +1,41 @@
 {
-  "name": "weather-dashboard-deploy-wrapper",
-  "version": "1.0.0",
+  "name": "smart-life-os",
+  "version": "0.1.3",
   "private": true,
   "type": "module",
   "engines": {
     "node": "22.x"
   },
-  "workspaces": [
-    "smart-life-os"
-  ],
   "scripts": {
-    "dev": "npm run smart:dev",
-    "build": "npm run build:weather && node scripts/copy-weather-dashboard.mjs && npm run smart:build",
+    "dev": "next dev",
+    "build": "npm run build:weather && node scripts/copy-weather-dashboard.mjs && next build",
     "build:weather": "node scripts/build-weather-dashboard.mjs",
-    "preview": "npm run smart:start",
-    "weather:dev": "npm run dev --prefix smart-life-os/weather-dashboard",
-    "weather:build": "npm run build --prefix smart-life-os/weather-dashboard",
-    "weather:preview": "npm run preview --prefix smart-life-os/weather-dashboard",
-    "smart:dev": "npm run dev --workspace smart-life-os",
-    "smart:build": "npm run build --workspace smart-life-os",
-    "smart:start": "npm run start --workspace smart-life-os",
-    "smart:lint": "npm run lint --workspace smart-life-os",
-    "smart:typecheck": "npm run typecheck --workspace smart-life-os"
+    "start": "next start",
+    "preview": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "weather:dev": "npm run dev --prefix weather-dashboard",
+    "weather:build": "npm run build --prefix weather-dashboard",
+    "weather:preview": "npm run preview --prefix weather-dashboard"
+  },
+  "dependencies": {
+    "@upstash/redis": "^1.35.1",
+    "lucide-react": "^0.553.0",
+    "maplibre-gl": "^4.7.1",
+    "next": "^16.2.9",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "zustand": "^5.0.1"
   },
   "devDependencies": {
-    "fdir": "^6.5.0",
-    "picomatch": "^4.0.4",
-    "postcss-selector-parser": "^6.1.4"
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.2.16",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.15",
+    "typescript": "^5.6.3"
   }
 }
