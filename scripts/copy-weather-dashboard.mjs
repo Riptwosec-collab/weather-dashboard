@@ -6,6 +6,29 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const source = resolve(root, "weather-dashboard", "dist");
 const target = resolve(root, "public", "weather-dashboard");
 const versionTarget = resolve(root, "public", "weather-dashboard-v23");
+const swKiller = `self.addEventListener("install", (event) => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.map((key) => caches.delete(key)));
+    const clientsList = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+    await Promise.all(clientsList.map((client) => {
+      if (client.url.includes("/weather-dashboard")) {
+        return client.navigate("/weather-dashboard-v23?cache-cleared=1");
+      }
+      return undefined;
+    }));
+    await self.registration.unregister();
+  })());
+});
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request, { cache: "no-store" }));
+});
+`;
 
 await rm(target, { force: true, recursive: true });
 await mkdir(target, { recursive: true });
@@ -42,6 +65,11 @@ async function rewriteVersionBase(dir) {
 }
 
 await rewriteVersionBase(versionTarget);
+
+await Promise.all([
+  writeFile(resolve(target, "sw.js"), swKiller, "utf8"),
+  writeFile(resolve(versionTarget, "sw.js"), swKiller, "utf8"),
+]);
 
 console.log(`Copied weather dashboard build to ${target}`);
 console.log(`Copied cache-busting weather dashboard build to ${versionTarget}`);
