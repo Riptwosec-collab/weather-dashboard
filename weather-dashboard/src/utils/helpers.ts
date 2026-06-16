@@ -156,7 +156,7 @@ export function buildOverlayLayers(
       'rainviewer-radar-src',
       [rainViewerTileUrl(rainviewerTs, 2, '1_1')],
       'rainviewer-radar-layer',
-      { 'raster-opacity': 0.72, 'raster-contrast': 0.08, 'raster-saturation': 0.2, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.84, 'raster-contrast': 0.16, 'raster-saturation': 0.34, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_RADAR_MAX_ZOOM }
     );
   }
@@ -166,7 +166,7 @@ export function buildOverlayLayers(
       'rainviewer-storm-src',
       [rainViewerTileUrl(rainviewerTs, 4, '1_1')],
       'rainviewer-storm-layer',
-      { 'raster-opacity': 0.78, 'raster-contrast': 0.2, 'raster-saturation': 0.4, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.88, 'raster-contrast': 0.26, 'raster-saturation': 0.52, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_RADAR_MAX_ZOOM }
     );
   }
@@ -176,7 +176,7 @@ export function buildOverlayLayers(
       'rainviewer-satellite-src',
       [rainViewerTileUrl(satelliteTs, 0, '0_0')],
       'rainviewer-satellite-layer',
-      { 'raster-opacity': 0.45, 'raster-contrast': 0.08, 'raster-saturation': -0.2, 'raster-resampling': 'linear' },
+      { 'raster-opacity': 0.52, 'raster-contrast': 0.12, 'raster-saturation': -0.04, 'raster-resampling': 'linear' },
       { attribution: RAINVIEWER_ATTRIBUTION, minzoom: 0, maxzoom: RAINVIEWER_SATELLITE_MAX_ZOOM }
     );
   }

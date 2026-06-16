@@ -130,24 +130,26 @@ function WeatherMapInner() {
         {/* ── selected location marker ── */}
         <Marker longitude={lng} latitude={lat} anchor="bottom">
           <div className="flex flex-col items-center pointer-events-none select-none">
-            <div className="bg-neutral-900/90 border border-blue-500/60 text-[9px] text-white
+            <div className="wd-map-card text-[9px] text-white
                             px-1.5 py-0.5 rounded shadow-lg mb-0.5 max-w-[160px] truncate text-center">
               {locationName}
             </div>
             <div className="relative">
-              <div className="w-4 h-4 rounded-full bg-blue-500 border-2 border-white shadow-lg
+              <div className="selected-marker-dot w-4 h-4 rounded-full border-2 border-white shadow-lg
                               flex items-center justify-center">
                 <div className="w-1.5 h-1.5 rounded-full bg-white" />
               </div>
               <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full
-                              w-0.5 h-2 bg-blue-500" />
+                              w-0.5 h-2 bg-[color:var(--accent)]" />
             </div>
           </div>
         </Marker>
       </Map>
 
-      <div className="absolute top-4 right-4 z-10 bg-black/70 border border-white/10 rounded-lg
-                      px-3 py-2 shadow-2xl backdrop-blur-sm pointer-events-none">
+      <div className="map-vignette" />
+
+      <div className="wd-map-card absolute top-4 right-4 z-10 rounded-lg
+                      px-3 py-2 pointer-events-none">
         <div className="text-[9px] text-neutral-400 uppercase tracking-[0.2em] mb-1.5">Boundaries</div>
         <div className="flex items-center gap-2 text-[10px] text-red-100">
           <span className="w-8 h-[2px] rounded bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.95)]" />
@@ -165,20 +167,20 @@ function WeatherMapInner() {
 
       {/* ── radar legend ── */}
       {showRadarLegend && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 bg-black/75 border border-white/10
-                        rounded-lg px-3 py-2 shadow-2xl backdrop-blur-sm min-w-[260px] pointer-events-none">
+        <div className="wd-map-card absolute bottom-4 left-1/2 -translate-x-1/2 z-10
+                        rounded-lg px-3 py-2 min-w-[260px] pointer-events-none">
           <div className="flex items-center justify-between text-[8px] text-neutral-400 mb-1">
             <span>Light rain</span><span>Moderate</span><span>Heavy</span><span>Storm</span>
           </div>
-          <div className="h-2 rounded-full bg-gradient-to-r from-sky-500 via-blue-500 via-yellow-400 to-red-500" />
+          <div className="h-2 rounded-full bg-gradient-to-r from-sky-400 via-cyan-300 via-yellow-300 via-orange-400 to-rose-500 shadow-[0_0_18px_rgba(56,189,248,0.35)]" />
         </div>
       )}
 
       {/* ── coordinate HUD ── */}
       {hud.show && (
         <div
-          className="absolute z-10 bg-black/90 border border-neutral-700 text-[10px] p-1.5
-                     rounded pointer-events-none text-green-400 font-mono shadow-2xl backdrop-blur-sm"
+          className="wd-map-card absolute z-10 text-[10px] p-1.5
+                     rounded pointer-events-none text-green-300 font-mono"
           style={{ top: hud.y + 15, left: hud.x + 15 }}
         >
           LAT: {hud.lat}<br />LNG: {hud.lng}
@@ -197,8 +199,7 @@ function WeatherMapInner() {
         <button
           onClick={handleShare}
           title="Copy share link"
-          className="h-9 flex items-center gap-2 rounded-full bg-neutral-900/90
-                     border border-white/20 shadow-lg hover:bg-neutral-800 transition-colors px-3"
+          className="wd-map-card h-9 flex items-center gap-2 rounded-full hover:bg-neutral-800 transition-colors px-3"
         >
           {copied
             ? <Check size={15} className="text-green-400" />
@@ -211,8 +212,8 @@ function WeatherMapInner() {
           onClick={handleAutoLocate}
           disabled={geoLoading}
           title="Use my location"
-          className="h-9 flex items-center gap-2 rounded-full bg-blue-600/90
-                     border border-blue-400/30 shadow-lg hover:bg-blue-500 transition-colors
+          className="h-9 flex items-center gap-2 rounded-full bg-[color:var(--accent)]
+                     border border-white/30 shadow-lg hover:brightness-110 transition
                      disabled:opacity-50 px-3 text-white"
         >
           {geoLoading

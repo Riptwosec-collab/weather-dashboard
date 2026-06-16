@@ -100,6 +100,7 @@ export default function App() {
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
     document.documentElement.classList.toggle('light', theme === 'light');
+    document.documentElement.dataset.theme = theme;
   }, [theme]);
 
   // RainViewer polling
@@ -110,7 +111,7 @@ export default function App() {
   }, [fetchRainviewerTs]);
 
   return (
-    <div className="h-screen w-screen overflow-hidden text-neutral-200 font-sans text-xs relative bg-neutral-950">
+    <div className="wd-root h-screen w-screen overflow-hidden text-neutral-200 font-sans text-xs relative">
 
       {/* Map */}
       <div className="absolute inset-0 z-0">

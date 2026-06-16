@@ -79,7 +79,7 @@ export interface GeocodingResult {
 
 // ── Store ────────────────────────────────────────────────────
 export type TempUnit   = 'C' | 'F';
-export type Theme      = 'dark' | 'light';
+export type Theme      = 'dark' | 'light' | 'aurora' | 'ember';
 export type MobilePanel = 'layers' | 'analysis' | 'timeline';
 export type LayerId    =
   | 'admin'
@@ -152,6 +152,7 @@ export interface WeatherStore {
   setCurrentTime: (i: number) => void;
   toggleTempUnit: () => void;
   toggleTheme: () => void;
+  setTheme: (theme: Theme) => void;
   setMobilePanel: (p: MobilePanel) => void;
   saveLocation: (loc: SavedLocation) => void;
   removeLocation: (id: string) => void;

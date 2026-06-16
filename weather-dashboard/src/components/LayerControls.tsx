@@ -1,13 +1,19 @@
 import React from 'react';
-import { Sun, Moon } from 'lucide-react';
+import { Palette } from 'lucide-react';
 import { useWeatherStore } from '../store/weatherStore';
 import { LAYERS_LIST, LAYER_ICONS, hasOwmApiKey } from '../utils/helpers';
-import type { LayerId } from '../types';
+import type { LayerId, Theme } from '../types';
 
 const OWM_LAYERS: LayerId[] = ['wind', 'temp', 'pressure', 'clouds', 'precip'];
 const SOON_LAYERS: LayerId[] = ['waves'];
 const RAINVIEWER_LAYERS: LayerId[] = ['radar', 'satellite', 'storms'];
 const RADAR_LAYERS: LayerId[] = ['radar', 'storms'];
+const THEME_OPTIONS: Array<{ id: Theme; label: string; swatch: string }> = [
+  { id: 'dark', label: 'Night', swatch: 'bg-slate-950' },
+  { id: 'light', label: 'Light', swatch: 'bg-sky-100' },
+  { id: 'aurora', label: 'Aurora', swatch: 'bg-teal-400' },
+  { id: 'ember', label: 'Ember', swatch: 'bg-orange-400' },
+];
 
 type LayerStatus = {
   label: 'LIVE' | 'API KEY' | 'NO DATA' | 'SOON';
@@ -63,7 +69,7 @@ export default function LayerControls({ compact = false }: { compact?: boolean }
     activeLayers,
     toggleLayer,
     theme,
-    toggleTheme,
+    setTheme,
     rainviewerTs,
     satelliteTs,
   } = useWeatherStore();
@@ -81,7 +87,7 @@ export default function LayerControls({ compact = false }: { compact?: boolean }
             return (
               <button
                 key={layer.id}
-                title={`${layer.name} · ${status.label}`}
+                title={`${layer.name} | ${status.label}`}
                 disabled={isDisabled}
                 onClick={() => !isDisabled && toggleLayer(layer.id)}
                 className={`relative w-9 h-9 rounded-lg border flex items-center justify-center transition-colors ${
@@ -134,23 +140,32 @@ export default function LayerControls({ compact = false }: { compact?: boolean }
         })}
       </div>
 
-      {/* Footer: tile attribution + theme toggle */}
       {!compact && (
-        <div className="p-2 border-t border-white/5 flex items-center justify-between gap-2">
-          <p className="text-[9px] text-neutral-600 leading-relaxed">
-            LIVE = ready · NO DATA = provider empty · API KEY = add VITE_OWM_API_KEY
-          </p>
-          <button
-            onClick={toggleTheme}
-            title={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
-            className="flex items-center gap-1 text-[9px] text-neutral-500 hover:text-white
-                       bg-neutral-800/60 hover:bg-neutral-700/60 border border-white/10
-                       rounded px-2 py-1 transition-colors shrink-0"
-          >
-            {theme === 'dark'
-              ? <><Sun size={10} /><span>Light</span></>
-              : <><Moon size={10} /><span>Dark</span></>}
-          </button>
+        <div className="p-2 border-t border-white/5 flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-[9px] text-neutral-600 leading-relaxed">
+              LIVE = ready | NO DATA = provider empty | API KEY = add VITE_OWM_API_KEY
+            </p>
+            <div className="flex items-center gap-1 text-[9px] text-neutral-500 shrink-0">
+              <Palette size={10} />
+              <span>Theme</span>
+            </div>
+          </div>
+          <div className="grid grid-cols-4 gap-1">
+            {THEME_OPTIONS.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setTheme(item.id)}
+                title={`Switch to ${item.label} theme`}
+                className={`theme-choice flex flex-col items-center gap-1 rounded-md px-1.5 py-1.5 text-[8px] text-neutral-400 transition-colors hover:text-white ${
+                  theme === item.id ? 'theme-choice-active' : ''
+                }`}
+              >
+                <span className={`h-3 w-3 rounded-full border border-white/30 ${item.swatch}`} />
+                <span>{item.label}</span>
+              </button>
+            ))}
+          </div>
         </div>
       )}
     </div>

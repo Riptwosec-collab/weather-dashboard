@@ -138,6 +138,8 @@ export const useWeatherStore = create<WeatherStore>()(
       toggleTheme: () =>
         set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
 
+      setTheme: (theme) => set({ theme }),
+
       setMobilePanel: (p) => set({ mobilePanel: p }),
 
       saveLocation: (loc) =>
