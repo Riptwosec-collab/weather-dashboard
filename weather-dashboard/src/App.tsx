@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, lazy, Suspense, useState } from 'react';
-import { Layers, Eye, Clock, Keyboard, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Layers, Eye, Clock, Keyboard, ChevronLeft, ChevronRight, Palette } from 'lucide-react';
 import { useWeatherStore } from './store/weatherStore';
 import { useShareableUrl } from './hooks/useShareableUrl';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import MobileNav from './components/MobileNav';
 import LayerControls from './components/LayerControls';
+import type { Theme } from './types';
 
 const WeatherMap      = lazy(() => import('./components/WeatherMap'));
 const MeteogramPanel  = lazy(() => import('./components/MeteogramPanel'));
@@ -41,6 +42,16 @@ const LiveBadge = () => (
     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> LIVE
   </span>
 );
+
+const THEME_OPTIONS: Array<{ id: Theme; label: string; color: string }> = [
+  { id: 'ocean', label: 'Ocean', color: 'bg-sky-400' },
+  { id: 'light', label: 'Light', color: 'bg-slate-100' },
+  { id: 'graphite', label: 'Graphite', color: 'bg-zinc-500' },
+  { id: 'aurora', label: 'Aurora', color: 'bg-teal-400' },
+  { id: 'violet', label: 'Violet', color: 'bg-violet-500' },
+  { id: 'ember', label: 'Ember', color: 'bg-orange-400' },
+  { id: 'dark', label: 'Night', color: 'bg-slate-950' },
+];
 
 // ── Onboarding tooltip ────────────────────────────────────────
 function OnboardingToast() {
@@ -80,9 +91,38 @@ function ShortcutHint() {
   );
 }
 
+function ThemeDock() {
+  const { theme, setTheme } = useWeatherStore();
+
+  return (
+    <div className="theme-dock absolute left-1/2 top-3 z-20 flex -translate-x-1/2 items-center gap-1.5 rounded-lg px-2 py-1.5 pointer-events-auto">
+      <div className="hidden items-center gap-1.5 pr-1.5 text-[9px] font-bold uppercase tracking-wider text-[color:var(--text-soft)] sm:flex">
+        <Palette size={11} />
+        <span>Theme</span>
+        <span className="rounded border border-white/10 px-1 py-0.5 font-mono text-[7px] text-[color:var(--accent)]">v2.2</span>
+      </div>
+      <div className="flex items-center gap-1">
+        {THEME_OPTIONS.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => setTheme(item.id)}
+            title={`Switch to ${item.label} theme`}
+            aria-label={`Switch to ${item.label} theme`}
+            className={`theme-dock-button ${theme === item.id ? 'theme-dock-button-active' : ''}`}
+          >
+            <span className={`h-3 w-3 rounded-full border border-white/35 ${item.color}`} />
+            <span className="hidden lg:inline">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Main ──────────────────────────────────────────────────────
 export default function App() {
-  const { fetchRainviewerTs, mobilePanel, theme } = useWeatherStore();
+  const { fetchRainviewerTs, mobilePanel, theme, setTheme } = useWeatherStore();
   const [layersCollapsed, setLayersCollapsed] = useState(false);
 
   // Shareable URL sync (reads params on mount, writes on change)
@@ -95,6 +135,13 @@ export default function App() {
     el?.focus();
   };
   useKeyboardShortcuts(focusSearch);
+
+  useEffect(() => {
+    const versionKey = 'weather-dashboard-ui-v22';
+    if (localStorage.getItem(versionKey)) return;
+    setTheme('ocean');
+    localStorage.setItem(versionKey, '1');
+  }, [setTheme]);
 
   // Apply theme class to <html>
   useEffect(() => {
@@ -124,6 +171,7 @@ export default function App() {
 
       {/* Shortcut hint */}
       <ShortcutHint />
+      <ThemeDock />
 
       {/* ── DESKTOP ── */}
       <div className="hidden md:flex absolute inset-0 z-10 pointer-events-none p-4 gap-4 flex-col">
