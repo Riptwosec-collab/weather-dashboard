@@ -10,6 +10,24 @@
   ],
   "headers": [
     {
+      "source": "/premium-weather",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/premium-weather/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, proxy-revalidate"
+        }
+      ]
+    },
+    {
       "source": "/weather-dashboard",
       "headers": [
         {
